@@ -1,0 +1,10 @@
+services:
+  saashead:
+    #build: .
+    image : saashead-prod-web:latest
+    container_name: saashead
+
+    ports:
+      - "3000:3000"
+
+    restart: unless-stopped

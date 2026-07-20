@@ -1,0 +1,60 @@
+import { NextResponse } from "next/server";
+import { jwtVerify } from "jose";
+import { connectDB } from "@/lib/mongodb";
+import License from "@/models/License";
+import User from "@/models/User";
+
+// Bulletproof helper: Gets the ID from the token, then fetches the guaranteed workspaceId from the DB
+async function getSecureContext(req: Request) {
+    const token = req.headers.get("cookie")?.split("token=")[1]?.split(";")[0];
+    if (!token) throw new Error("No token found in cookies");
+    
+    const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.JWT_SECRET));
+    const userId = payload.userId || payload.id;
+
+    await connectDB();
+    const user = await User.findById(userId).lean();
+    
+    if (!user) throw new Error("User not found in database");
+    if (!user.workspaceId) throw new Error("User has no workspaceId assigned in database");
+
+    return { 
+        userId: user._id, 
+        workspaceId: user.workspaceId 
+    };
+}
+
+export async function GET(req: Request) {
+    try {
+        const { workspaceId } = await getSecureContext(req);
+        
+        // Fetch only apps belonging to this workspace
+        const licenses = await License.find({ workspaceId }).sort({ createdAt: -1 }).lean();
+        return NextResponse.json(licenses);
+    } catch (error) {
+        console.error("GET Licenses Error:", error);
+        return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+}
+
+export async function POST(req: Request) {
+    try {
+        // 1. Get the verified IDs
+        const { userId, workspaceId } = await getSecureContext(req);
+        const body = await req.json();
+        
+        console.log("Saving License with UserID:", userId, "and WorkspaceID:", workspaceId);
+        
+        // 2. Save the app and forcefully attach BOTH the User ID and Workspace ID
+        const newLicense = await License.create({
+            ...body,
+            userId: userId,
+            workspaceId: workspaceId
+        });
+
+        return NextResponse.json({ success: true, data: newLicense });
+    } catch (error: any) {
+        console.error("POST License Error:", error);
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    }
+}

@@ -1,0 +1,111 @@
+import { NextResponse } from "next/server";
+import { jwtVerify } from "jose";
+import { connectDB } from "@/lib/mongodb";
+import License from "@/models/License";
+import User from "@/models/User";
+import Snapshot from "@/models/Snapshot";
+
+export async function GET(req: Request) {
+    try {
+        const token = req.headers.get("cookie")?.split("token=")[1]?.split(";")[0];
+        if (!token) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+        const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.JWT_SECRET));
+        const userId = payload.userId || payload.id;
+
+        await connectDB();
+        
+        // Fetch user from DB to guarantee we have their correct workspaceId
+        const user = await User.findById(userId).lean();
+        if (!user || !user.workspaceId) {
+             return NextResponse.json({ message: "No Workspace assigned" }, { status: 403 });
+        }
+
+        const workspaceId = user.workspaceId;
+        const licenses = await License.find({ workspaceId }).lean();
+
+        let monthlySpend = 0;
+        let potentialSavings = 0;
+        let critical = 0, warning = 0, safe = 0;
+        const today = new Date();
+
+        const topVendorsMap = new Map();
+        const unused: any[] = [];
+        const renewals: any[] = [];
+
+        for (const l of licenses as any[]) {
+            const count = Number(l.licenseCount) || 0;
+            const cost = Number(l.costPerLicense) || 0;
+            
+            // Handle array length or fallback
+            const assignedArray = l.assignedTo || [];
+            const assigned = assignedArray.length > 0 ? assignedArray.length : (Number(l.assignedUsers) || 0);
+            
+            const mCost = cost * count; 
+            monthlySpend += mCost;
+            
+            const inactive = Math.max(count - assigned, 0);
+            const savings = inactive * cost;
+            potentialSavings += savings;
+
+            const currentVendorSpend = topVendorsMap.get(l.vendor || "Unknown") || 0;
+            topVendorsMap.set(l.vendor || "Unknown", currentVendorSpend + mCost);
+
+            if (inactive > 0) {
+                unused.push({ name: l.applicationName, vendor: l.vendor, assigned, inactive, savings });
+            }
+
+            if (l.renewalDate) {
+                const days = Math.ceil((new Date(l.renewalDate).getTime() - today.getTime()) / (1000 * 3600 * 24));
+                if (days <= 30) critical++; else if (days <= 90) warning++; else safe++;
+                renewals.push({
+                    id: l._id.toString(), name: l.applicationName, vendor: l.vendor,
+                    renewal_date: l.renewalDate, days, amount: mCost,
+                    status: days <= 30 ? "Critical" : days <= 90 ? "Warning" : "Active",
+                    owner: l.owner || "IT"
+                });
+            } else { safe++; }
+        }
+
+        // --- NEW: HISTORICAL SNAPSHOT LOGIC FOR THE CHART ---
+        const snapshots = await Snapshot.find({ workspaceId }).lean();
+        const spend_trend = [];
+        
+        // Loop backwards from 5 months ago up to this current month
+        for (let i = 5; i >= 0; i--) {
+            const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+            const shortMonth = d.toLocaleString('default', { month: 'short' }); // "Jan", "Feb"
+            const fullMonth = d.toLocaleString('default', { month: 'long' });   // "January"
+            const year = d.getFullYear();
+
+            if (i === 0) {
+                // The current month ALWAYS uses real-time live data
+                spend_trend.push({ month: shortMonth, spend: monthlySpend });
+            } else {
+                // Historical months look for a saved snapshot
+                const snap = snapshots.find((s: any) => s.month === fullMonth && s.year === year);
+                spend_trend.push({ month: shortMonth, spend: snap ? snap.totalMonthlySpend : 0 });
+            }
+        }
+
+        return NextResponse.json({
+            success: true,
+            kpis: {
+                total_apps: licenses.length,
+                monthly_spend: monthlySpend,
+                annual_spend: monthlySpend * 12,
+                potential_savings: potentialSavings,
+            },
+            spend_trend: spend_trend, // Fueled by real historical data!
+            renewal_risk: { critical, warning, safe, total: licenses.length },
+            top_vendors: Array.from(topVendorsMap, ([vendor, spend]) => ({ vendor, spend })).sort((a, b) => b.spend - a.spend).slice(0, 5),
+            unused_licenses: unused.sort((a, b) => b.savings - a.savings).slice(0, 4),
+            upcoming_renewals: renewals.sort((a, b) => a.days - b.days).slice(0, 5),
+            ai_insights: [`You are actively wasting $${potentialSavings} on unused seats.`]
+        });
+
+    } catch (error) {
+        console.error("Dashboard Error:", error);
+        return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
+    }
+}
