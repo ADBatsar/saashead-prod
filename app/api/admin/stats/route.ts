@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
   
   // 1. Verify Token

@@ -3,18 +3,21 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
 
 export default function RegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  
+  // Added default country code state
+  const [countryCode, setCountryCode] = useState("+91");
 
   const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
-    mobileNumber: "", // Added for profile
+    mobileNumber: "", 
     companyName: "",
     companySize: "1-50",
     role: "IT",
@@ -26,6 +29,9 @@ export default function RegisterPage() {
     setError("");
 
     try {
+      // Combine country code with mobile number ONLY if they entered one
+      const fullMobile = form.mobileNumber ? `${countryCode}${form.mobileNumber}` : "";
+
       const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: {
@@ -35,7 +41,7 @@ export default function RegisterPage() {
           name: form.name,
           email: form.email,
           password: form.password,
-          mobileNumber: form.mobileNumber, // Added to payload
+          mobileNumber: fullMobile, 
           companyName: form.companyName,
           companySize: form.companySize,
           role: form.role,
@@ -77,6 +83,34 @@ export default function RegisterPage() {
           <p className="text-sm text-slate-500 mt-2">Start managing your SaaS applications.</p>
 
           <form onSubmit={submit} className="space-y-4 mt-8">
+
+            {/* NEW COMPOSITE PHONE FIELD WITH COUNTRY DROPDOWN */}
+            <div>
+              <label className="text-[11px] uppercase tracking-wider text-slate-500">Mobile Number (Optional)</label>
+              <div className="mt-1 flex rounded-xl border border-slate-800 bg-[#070A11] overflow-hidden focus-within:border-blue-500 transition">
+                <div className="relative flex items-center border-r border-slate-800 bg-[#111520]">
+                  <select
+                    value={countryCode}
+                    onChange={(e) => setCountryCode(e.target.value)}
+                    className="pl-4 pr-8 py-3 bg-transparent text-white text-sm focus:outline-none appearance-none cursor-pointer z-10"
+                  >
+                    <option value="+91" className="bg-slate-900">IN (+91)</option>
+                    <option value="+1" className="bg-slate-900">US (+1)</option>
+                    <option value="+44" className="bg-slate-900">UK (+44)</option>
+                    <option value="+61" className="bg-slate-900">AU (+61)</option>
+                  </select>
+                  <ChevronDown className="w-3 h-3 text-slate-500 absolute right-3 pointer-events-none" />
+                </div>
+                <input
+                  type="tel"
+                  value={form.mobileNumber}
+                  onChange={(e) => setForm({ ...form, mobileNumber: e.target.value.replace(/\D/g, '') })}
+                  placeholder="98765 43210"
+                  className="w-full px-4 py-3 text-sm text-white bg-transparent outline-none placeholder:text-slate-600"
+                />
+              </div>
+            </div>
+
             <div>
               <label className="text-[11px] uppercase tracking-wider text-slate-500">Your Name</label>
               <input
@@ -84,7 +118,7 @@ export default function RegisterPage() {
                 required
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                placeholder="John Doe"
+                placeholder="Full Name"
                 className="mt-1 w-full bg-[#070A11] border border-slate-800 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-blue-500 transition"
               />
             </div>
@@ -97,30 +131,6 @@ export default function RegisterPage() {
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="you@company.com"
-                className="mt-1 w-full bg-[#070A11] border border-slate-800 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-blue-500 transition"
-              />
-            </div>
-
-            <div>
-              <label className="text-[11px] uppercase tracking-wider text-slate-500">Password</label>
-              <input
-                type="password"
-                required
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-                placeholder="Minimum 6 characters"
-                className="mt-1 w-full bg-[#070A11] border border-slate-800 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-blue-500 transition"
-              />
-            </div>
-
-            {/* Added Mobile Number Input */}
-            <div>
-              <label className="text-[11px] uppercase tracking-wider text-slate-500">Mobile Number (Optional)</label>
-              <input
-                type="tel"
-                value={form.mobileNumber}
-                onChange={(e) => setForm({ ...form, mobileNumber: e.target.value })}
-                placeholder="+1 (555) 000-0000"
                 className="mt-1 w-full bg-[#070A11] border border-slate-800 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-blue-500 transition"
               />
             </div>
@@ -140,29 +150,35 @@ export default function RegisterPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="text-[11px] uppercase tracking-wider text-slate-500">Company Size</label>
-                <select
-                  value={form.companySize}
-                  onChange={(e) => setForm({ ...form, companySize: e.target.value })}
-                  className="mt-1 w-full bg-[#070A11] border border-slate-800 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-blue-500 transition appearance-none"
-                >
-                  <option value="1-50">1 - 50</option>
-                  <option value="51-200">51 - 200</option>
-                  <option value="201-500">201 - 500</option>
-                  <option value="500+">500+</option>
-                </select>
+                <div className="relative">
+                  <select
+                    value={form.companySize}
+                    onChange={(e) => setForm({ ...form, companySize: e.target.value })}
+                    className="mt-1 w-full bg-[#070A11] border border-slate-800 rounded-xl pl-4 pr-8 py-3 text-sm text-white outline-none focus:border-blue-500 transition appearance-none"
+                  >
+                    <option value="1-50">1 - 50</option>
+                    <option value="51-200">51 - 200</option>
+                    <option value="201-500">201 - 500</option>
+                    <option value="500+">500+</option>
+                  </select>
+                  <ChevronDown className="w-3 h-3 text-slate-500 absolute right-3 top-[22px] pointer-events-none" />
+                </div>
               </div>
               <div>
                 <label className="text-[11px] uppercase tracking-wider text-slate-500">Your Role</label>
-                <select
-                  value={form.role}
-                  onChange={(e) => setForm({ ...form, role: e.target.value })}
-                  className="mt-1 w-full bg-[#070A11] border border-slate-800 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-blue-500 transition appearance-none"
-                >
-                  <option value="IT">IT / Eng</option>
-                  <option value="Finance">Finance</option>
-                  <option value="Operations">Operations</option>
-                  <option value="Executive">Executive</option>
-                </select>
+                <div className="relative">
+                  <select
+                    value={form.role}
+                    onChange={(e) => setForm({ ...form, role: e.target.value })}
+                    className="mt-1 w-full bg-[#070A11] border border-slate-800 rounded-xl pl-4 pr-8 py-3 text-sm text-white outline-none focus:border-blue-500 transition appearance-none"
+                  >
+                    <option value="IT">IT / Eng</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Operations">Operations</option>
+                    <option value="Executive">Executive</option>
+                  </select>
+                  <ChevronDown className="w-3 h-3 text-slate-500 absolute right-3 top-[22px] pointer-events-none" />
+                </div>
               </div>
             </div>
 

@@ -13,8 +13,12 @@ export async function middleware(req: NextRequest) {
     try {
       const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.JWT_SECRET));
       
-      // 2. Platform Access Guard
-      if (path.startsWith("/admin") && payload.role !== "PLATFORM_OWNER") {
+      // 2. Platform Access Guard (Updated Casing & Added Admin)
+      if (
+        path.startsWith("/admin") && 
+        payload.role !== "Platform Owner" && 
+        payload.role !== "Platform Admin"
+      ) {
         return NextResponse.redirect(new URL("/dashboard", req.url));
       }
       

@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import Layout from "@/components/workspace/Layout";
-import VendorBadge from "@/components/workspace/VendorBadge";
 import { formatDate, currency } from "@/lib/utils";
 
 export default function RenewalsPage() {
@@ -75,7 +74,7 @@ export default function RenewalsPage() {
   }, [renewals]);
 
   const tabs = [
-    { k: "all", label: "All Upcoming", count: counts.all, color: "text-white" },
+    { k: "all", label: "All Upcoming", count: counts.all, color: "text-slate-900 font-bold" },
     { k: "critical", label: "Critical (≤ 30 days)", count: counts.critical, color: "text-rose-400" },
     { k: "warning", label: "Warning (≤ 90 days)", count: counts.warning, color: "text-amber-400" },
     { k: "safe", label: "Safe (> 90 days)", count: counts.safe, color: "text-emerald-400" },
@@ -97,7 +96,7 @@ export default function RenewalsPage() {
             className={`text-left rounded-2xl border p-5 transition ${
               bucket === t.k 
                 ? "border-blue-500/50 bg-blue-500/10 shadow-[0_0_15px_rgba(59,130,246,0.1)]" 
-                : "border-slate-800/80 bg-[#0E1320]/80 hover:bg-[#101729]"
+                : "border-amber-200/60 shadow-sm bg-[#FFFCF5]/80 hover:bg-white"
             }`}>
             <div className="text-[10px] uppercase tracking-wider text-slate-500">{t.label}</div>
             <div className={`font-display text-3xl font-light tabular-nums mt-2 ${t.color}`}>
@@ -108,10 +107,10 @@ export default function RenewalsPage() {
       </div>
 
       {/* Renewals Table */}
-      <div className="rounded-2xl border border-slate-800/80 bg-[#0E1320]/80 overflow-hidden shadow-xl">
+      <div className="rounded-2xl border border-amber-200/60 shadow-sm bg-[#FFFCF5]/80 overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left text-slate-300">
-            <thead className="bg-[#111728] border-b border-slate-800/80">
+          <table className="w-full text-sm text-left text-slate-600 font-medium">
+            <thead className="bg-[#111728] border-b border-amber-200/60 shadow-sm">
               <tr className="text-[10px] uppercase tracking-wider text-slate-500">
                 <th className="px-6 py-4 font-medium">Application</th>
                 <th className="px-6 py-4 font-medium">Renewal Date</th>
@@ -132,14 +131,13 @@ export default function RenewalsPage() {
                   <tr key={app._id} className="hover:bg-white/5 transition">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <VendorBadge name={app.vendor} size={32} />
                         <div>
-                          <div className="font-medium text-white">{app.applicationName}</div>
+                          <div className="font-medium text-slate-900 font-bold">{app.applicationName}</div>
                           <div className="text-[11px] text-slate-500">{app.owner || "IT"} · {app.department}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-slate-300">
+                    <td className="px-6 py-4 whitespace-nowrap text-slate-600 font-medium">
                       {formatDate(app.renewalDate)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap tabular-nums font-medium">
@@ -149,7 +147,7 @@ export default function RenewalsPage() {
                         <span>{app.days} Days</span>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap tabular-nums text-slate-300">
+                    <td className="px-6 py-4 whitespace-nowrap tabular-nums text-slate-600 font-medium">
                       {currency(app.annualImpact)}
                     </td>
                     <td className="px-6 py-4 text-right">
@@ -165,7 +163,7 @@ export default function RenewalsPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-slate-500 bg-[#0E1320]/50">
+                  <td colSpan={5} className="px-6 py-12 text-center text-slate-500 bg-[#FFFCF5]/50">
                     No upcoming renewals found in this category.
                   </td>
                 </tr>

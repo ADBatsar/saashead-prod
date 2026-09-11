@@ -3,8 +3,13 @@ import mongoose from "mongoose";
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  phone: { type: String, unique: true, sparse: true }, // ADDED: Required for OTP Login!
+  
+  // FIX 1: Make password optional since we are moving to Phone OTP
+  password: { type: String, required: false }, 
+  
+  // FIX 2: Make phone required for login
+  phone: { type: String, required: true, unique: true }, 
+  
   companyName: { type: String },
   companySize: { type: String },
   department: { type: String }, // Storing what they picked in the dropdown (IT, Finance, etc.)

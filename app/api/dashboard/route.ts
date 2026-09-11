@@ -50,7 +50,7 @@ export async function GET(req: Request) {
             const savings = inactive * monthlyUnitCost;
             potentialSavings += savings;
 
-            const vendorName = l.vendor || "Unknown";
+            const vendorName = l.vendorName || l.vendor || "Unknown";
             const currentVendorSpend = topVendorsMap.get(vendorName) || 0;
             topVendorsMap.set(vendorName, currentVendorSpend + mCost);
 

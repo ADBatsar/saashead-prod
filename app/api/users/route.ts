@@ -1,70 +1,69 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
-import bcrypt from "bcryptjs";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
+import { sendWelcomeNotification } from "@/lib/notifications";
 
-// Secure helper to get the exact workspace of the logged-in user
-async function getSecureWorkspace(req: Request) {
+async function getSecureContext(req: Request) {
     const token = req.headers.get("cookie")?.split("token=")[1]?.split(";")[0];
     if (!token) throw new Error("Unauthorized");
     
-    const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.JWT_SECRET));
+    // Validate JWT
+    const secret = process.env.JWT_SECRET;
+    if (!secret) throw new Error("JWT_SECRET is missing");
     
-    // Check if the current user is a License Holder. If they are, they shouldn't be here.
-    if (payload.role === "Workspace License Holder") {
-        throw new Error("Forbidden: License Holders cannot manage users.");
-    }
-
-    return payload.workspaceId;
+    const { payload } = await jwtVerify(token, new TextEncoder().encode(secret));
+    
+    await connectDB();
+    const user = await User.findById(payload.userId || payload.id).lean();
+    if (!user || !user.workspaceId) throw new Error("Missing workspace");
+    
+    return { workspaceId: user.workspaceId, role: user.role };
 }
 
 export async function GET(req: Request) {
     try {
-        const workspaceId = await getSecureWorkspace(req);
-        await connectDB();
-        
-        // Fetch all users locked to this specific workspace
-        const users = await User.find({ workspaceId }).select("_id name email role createdAt").sort({ createdAt: -1 }).lean();
-        
+        const { workspaceId } = await getSecureContext(req);
+        const users = await User.find({ workspaceId }).sort({ createdAt: -1 }).lean();
         return NextResponse.json({ success: true, users });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message || "Invalid session" }, { status: 401 });
+        return NextResponse.json({ success: false, message: error.message }, { status: 401 });
     }
 }
 
 export async function POST(req: Request) {
     try {
-        const workspaceId = await getSecureWorkspace(req);
-        const body = await req.json();
-        const { name, email, password, role } = body;
-
-        await connectDB();
-
-        // 1. Prevent duplicate emails globally
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return NextResponse.json({ error: "Email is already in use." }, { status: 400 });
+        const { workspaceId, role } = await getSecureContext(req);
+        
+        // Only Chiefs and Operators can add users
+        if (role === "Workspace License Holder" || role === "Workspace Viewer") {
+             return NextResponse.json({ success: false, message: "Insufficient permissions" }, { status: 403 });
         }
 
-        // 2. Hash the password for the new team member
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const body = await req.json();
+        
+        // Check if user already exists
+        const existingUser = await User.findOne({ email: body.email });
+        if (existingUser) {
+            return NextResponse.json({ success: false, error: "User with this email already exists" }, { status: 400 });
+        }
 
-        // 3. Create the user, forcefully locking them into the current workspace
+        // Create the new user
         const newUser = await User.create({
-            name,
-            email,
-            password: hashedPassword,
-            role,
-            workspaceId: workspaceId // STRICT TENANT ISOLATION
+            name: body.name,
+            email: body.email,
+            phone: body.phone,
+            role: body.role,
+            workspaceId: workspaceId
         });
 
-        // Strip password before returning
-        const safeUser = { _id: newUser._id, name: newUser.name, email: newUser.email, role: newUser.role };
+        // Trigger the Central Notification (Email + SMS/WhatsApp)!
+        // Fire and forget (no await so it doesn't slow down the response to the user)
+        sendWelcomeNotification(newUser.name, newUser.email, newUser.phone);
 
-        return NextResponse.json({ success: true, user: safeUser }, { status: 201 });
+        return NextResponse.json({ success: true, user: newUser });
     } catch (error: any) {
-        console.error("Create User Error:", error);
-        return NextResponse.json({ error: error.message || "Server Error" }, { status: 500 });
+        console.error("POST User Error:", error);
+        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }
 }

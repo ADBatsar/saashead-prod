@@ -1,0 +1,14 @@
+nohup: ignoring input
+
+> saashead@0.1.0 start
+> next start -p 3000
+
+▲ Next.js 16.2.9
+- Local:         http://localhost:3000
+- Network:       http://172.31.47.248:3000
+✓ Ready in 267ms
+⚠ `eslint` configuration in next.config.mjs is no longer supported. See more info here: https://nextjs.org/docs/app/api-reference/cli/next#next-lint-options
+⚠ Invalid next.config.mjs options detected: 
+⚠     Unrecognized key(s) in object: 'eslint'
+⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+Killed

@@ -4,6 +4,7 @@ import { connectDB } from "@/lib/mongodb";
 import License from "@/models/License";
 import User from "@/models/User";
 import { syncCurrentMonthSnapshot } from "@/lib/snapshot";
+import { sendAppAssignmentNotification } from "@/lib/notifications";
 
 async function getSecureContext(req: Request) {
     const token = req.headers.get("cookie")?.split("token=")[1]?.split(";")[0];
@@ -39,8 +40,8 @@ export async function POST(req: Request) {
         const newLicense = await License.create({
             applicationName: body.applicationName,
             vendor: body.vendor,
-            vendorName: body.vendorName || body.vendor, // CRITICAL FIX: Stops the Mongoose error
-            vendorId: body.vendorId,                    // CRITICAL FIX: Relational linkage
+            vendorName: body.vendorName || body.vendor,
+            vendorId: body.vendorId,                    
             category: body.category,
             department: body.department,
             billingCycle: body.billingCycle,
@@ -54,6 +55,21 @@ export async function POST(req: Request) {
         });
 
         await syncCurrentMonthSnapshot(workspaceId);
+
+        // --- NOTIFICATION LOGIC ---
+        // If users were assigned during creation, notify them!
+        if (assignedArray.length > 0) {
+            const newlyAssignedUsers = await User.find({ _id: { $in: assignedArray } }).lean();
+            for (const u of newlyAssignedUsers) {
+                // Fire and forget using the centralized utility
+                sendAppAssignmentNotification(
+                    u.name || 'User',
+                    u.email,
+                    u.phone,
+                    newLicense.applicationName
+                );
+            }
+        }
 
         return NextResponse.json({ success: true, data: newLicense });
     } catch (error: any) {

@@ -20,14 +20,14 @@ export default function NotificationsPage() {
       {/* Channels Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {CHANNELS.map((c) => (
-          <div key={c.k} className="rounded-2xl border border-slate-800/80 bg-[#0E1320]/80 p-5">
+          <div key={c.k} className="rounded-2xl border border-amber-200/60 shadow-sm bg-[#FFFCF5]/80 p-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl border bg-white/5 border-slate-800 flex items-center justify-center">
-                  <c.icon className="w-4 h-4 text-slate-400" />
+                <div className="w-10 h-10 rounded-xl border bg-white/5 border-amber-200/60 shadow-sm flex items-center justify-center">
+                  <c.icon className="w-4 h-4 text-slate-600" />
                 </div>
                 <div>
-                  <div className="font-display text-sm text-white">{c.label}</div>
+                  <div className="font-display text-sm text-slate-900 font-bold">{c.label}</div>
                   <div className="text-[11px] text-slate-500">{c.desc}</div>
                 </div>
               </div>
@@ -41,14 +41,14 @@ export default function NotificationsPage() {
 
       {/* Schedule + Security */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5">
-        <div className="rounded-2xl border border-slate-800/80 bg-[#0E1320]/80 p-5">
-          <div className="font-display text-sm text-white mb-4 flex items-center gap-2"><Bell className="w-4 h-4 text-amber-300" /> Summary schedule</div>
+        <div className="rounded-2xl border border-amber-200/60 shadow-sm bg-[#FFFCF5]/80 p-5">
+          <div className="font-display text-sm text-slate-900 font-bold mb-4 flex items-center gap-2"><Bell className="w-4 h-4 text-amber-300" /> Summary schedule</div>
           <div className="text-sm text-slate-500 italic">Configuration form pending integration...</div>
         </div>
 
-        <div className="rounded-2xl border border-slate-800/80 bg-gradient-to-br from-amber-500/5 to-violet-500/5 p-5">
-          <div className="font-display text-sm text-white mb-1 flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-violet-300" /> Multi-Factor Authentication</div>
-          <div className="text-[11px] text-slate-400 mb-4">Add an extra layer of security with any authenticator app.</div>
+        <div className="rounded-2xl border border-amber-200/60 shadow-sm bg-gradient-to-br from-amber-500/5 to-violet-500/5 p-5">
+          <div className="font-display text-sm text-slate-900 font-bold mb-1 flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-violet-300" /> Multi-Factor Authentication</div>
+          <div className="text-[11px] text-slate-600 mb-4">Add an extra layer of security with any authenticator app.</div>
           {!mfaEnabled && (
             <button className="text-xs px-4 py-2 rounded-lg bg-violet-500/15 border border-violet-500/30 text-violet-200 flex items-center gap-2">
               <KeyRound className="w-3.5 h-3.5" /> Set up MFA

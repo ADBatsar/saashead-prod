@@ -37,7 +37,7 @@ export default function CompaniesPage() {
     }
   };
 
-  const handleCreateCompany = async (company: Company) => {
+  const handleCreateCompany = async (company: any) => {
     try {
 
       const response = await fetch("/api/admin/companies", {

@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 import twilio from 'twilio';
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
@@ -21,7 +20,7 @@ async function sendSMS(phone: string, message: string) {
         return true;
     } catch (error) {
         console.error("Twilio SMS Error:", error);
-        // Fallback for local testing if Twilio fails or isn't set up yet
+        // Fallback for local testing if Twilio fails
         console.log(`[FALLBACK SMS] To ${phone}: ${message}`);
         return true; 
     }
@@ -29,19 +28,44 @@ async function sendSMS(phone: string, message: string) {
 
 export async function POST(req: Request) {
     try {
-        const { email, password } = await req.json(); 
+        // 1. Extract the phone AND the Turnstile Token from the frontend payload
+        const { phone, turnstileToken } = await req.json(); 
+        
+        if (!phone) {
+            return NextResponse.json({ error: "Phone number is required" }, { status: 400 });
+        }
+        if (!turnstileToken) {
+            return NextResponse.json({ error: "CAPTCHA verification is required" }, { status: 400 });
+        }
+
+        // ==========================================
+        // 2. VERIFY CLOUDFLARE TURNSTILE CAPTCHA
+        // ==========================================
+        const formData = new URLSearchParams();
+        formData.append('secret', process.env.TURNSTILE_SECRET_KEY as string);
+        formData.append('response', turnstileToken);
+
+        const turnstileRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+            method: 'POST',
+            body: formData
+        });
+        const turnstileData = await turnstileRes.json();
+        
+        if (!turnstileData.success) {
+            console.error("CAPTCHA Failed:", turnstileData);
+            return NextResponse.json({ error: "CAPTCHA validation failed. Are you a bot?" }, { status: 403 });
+        }
+        // ==========================================
+
         await connectDB();
 
-        // 1. Verify user exists with this email
-        const user = await User.findOne({ email });
-        if (!user) return NextResponse.json({ error: "Invalid email or password" }, { status: 404 });
-
-        // 2. Verify the Password
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
-
-        // 3. Ensure they have a phone number registered
-        if (!user.phone) return NextResponse.json({ error: "No mobile number attached to this account. Please contact your admin." }, { status: 400 });
+        // 3. Search the database strictly by the phone number
+        const user = await User.findOne({ phone });
+        
+        // Notice the updated error message here!
+        if (!user) {
+            return NextResponse.json({ error: "Mobile number not registered. Please sign up." }, { status: 404 });
+        }
 
         // 4. Generate a random 6-digit OTP
         const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
@@ -51,7 +75,7 @@ export async function POST(req: Request) {
         await Otp.create({ phone: user.phone, otp: otpCode, purpose: "login" });
 
         // 6. Send the SMS
-        await sendSMS(user.phone, `Your SaaSHead login code is: ${otpCode}. Valid for 5 minutes.`);
+        await sendSMS(user.phone, `Your HeadSaaS login code is: ${otpCode}. Valid for 5 minutes.`);
 
         // Mask the phone number for the frontend UI (e.g., ******8339)
         const maskedPhone = user.phone.slice(0, -4).replace(/./g, '*') + user.phone.slice(-4);

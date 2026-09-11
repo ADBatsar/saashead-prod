@@ -1,9 +1,7 @@
-// app/licenses/page.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
 import Layout from "@/components/workspace/Layout";
-import VendorBadge from "@/components/workspace/VendorBadge";
 import StatusChip, { HealthDot } from "@/components/workspace/StatusChip";
 import { currency, formatDate } from "@/lib/utils";
 import { Search, ArrowUpDown } from "lucide-react";
@@ -57,7 +55,7 @@ export default function LicensesPage() {
             return {
                 id: l._id || l.id,
                 name: l.applicationName,
-                vendor: l.vendor,
+                vendor: l.vendorName || l.vendor || "Unknown",
                 owner: l.owner || "IT",
                 department: l.department || "Engineering",
                 seats_total,
@@ -131,7 +129,7 @@ export default function LicensesPage() {
       </div>
 
       <div className="flex items-center justify-end mb-4">
-        <div className="flex items-center gap-2 bg-[#0E1320] border border-slate-800 rounded-xl px-3 py-2 w-72">
+        <div className="flex items-center gap-2 bg-[#FFFCF5] border border-amber-200/60 shadow-sm rounded-xl px-3 py-2 w-72">
           <Search className="w-4 h-4 text-slate-500" />
           <input 
             data-testid="license-search" 
@@ -143,19 +141,19 @@ export default function LicensesPage() {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-slate-800/80 bg-[#0E1320]/80 overflow-hidden">
+      <div className="rounded-2xl border border-amber-200/60 shadow-sm bg-[#FFFCF5]/80 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-[#111728]">
-              <tr className="text-[10px] uppercase tracking-wider text-slate-500">
-                {cols.map((c) => (
+            <tr className="text-[10px] uppercase font-bold tracking-wider text-slate-400 border-b border-slate-200">    
+	    {cols.map((c) => (
                   <th key={c.key} className="text-left px-4 py-3 font-medium">
                     <button 
                       onClick={() => { 
                         if (sortKey === c.key) setSortDir(sortDir === "asc" ? "desc" : "asc"); 
                         else { setSortKey(c.key); setSortDir("desc"); } 
                       }}
-                      className="inline-flex items-center gap-1 hover:text-slate-300" 
+                      className="inline-flex items-center gap-1 hover:text-slate-600 font-medium" 
                       data-testid={`sort-${c.key}`}
                     >
                       {c.label} <ArrowUpDown className="w-3 h-3 opacity-50" />
@@ -171,23 +169,22 @@ export default function LicensesPage() {
                 const rowKey = a.id || a._id || index; 
                 
                 return (
-                  <tr key={rowKey} data-testid={`license-row-${rowKey}`} className="border-t border-slate-800/40 hover:bg-white/[0.02] transition">
+                  <tr key={rowKey} data-testid={`license-row-${rowKey}`} className="border-t border-slate-800/40 hover:bg-amber-50] transition">
                     <td className="px-4 py-3 flex items-center gap-3">
-                      <VendorBadge name={a.vendor} size={28} />
-                      <span className="text-white">{a.name}</span>
+                      <span className="text-slate-900 font-bold">{a.name}</span>
                     </td>
-                    <td className="px-4 py-3 text-slate-400">{a.vendor}</td>
-                    <td className="px-4 py-3 text-slate-300">{a.owner}</td>
-                    <td className="px-4 py-3 text-slate-400">{a.department}</td>
-                    <td className="px-4 py-3 text-white tabular-nums">{a.seats_total}</td>
-                    <td className="px-4 py-3 text-white tabular-nums">{a.seats_used}</td>
+                    <td className="px-4 py-3 text-slate-600">{a.vendor}</td>
+                    <td className="px-4 py-3 text-slate-600 font-medium">{a.owner}</td>
+                    <td className="px-4 py-3 text-slate-600">{a.department}</td>
+                    <td className="px-4 py-3 text-slate-900 font-bold tabular-nums">{a.seats_total}</td>
+                    <td className="px-4 py-3 text-slate-900 font-bold tabular-nums">{a.seats_used}</td>
                     <td className="px-4 py-3 text-rose-300 tabular-nums">{inactive}</td>
-                    <td className="px-4 py-3 text-white tabular-nums">{currency(a.monthly_cost)}</td>
-                    <td className="px-4 py-3 text-slate-300">{formatDate(a.renewal_date)}</td>
+                    <td className="px-4 py-3 text-slate-900 font-bold tabular-nums">{currency(a.monthly_cost)}</td>
+                    <td className="px-4 py-3 text-slate-600 font-medium">{formatDate(a.renewal_date)}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1.5">
                         <HealthDot health={a.health} />
-                        <span className="text-slate-300 text-xs">{HEALTH_LABEL[a.health] || a.health}</span>
+                        <span className="text-slate-600 font-medium text-xs">{HEALTH_LABEL[a.health] || a.health}</span>
                       </div>
                     </td>
                   </tr>
@@ -216,13 +213,13 @@ interface StatProps {
 
 function Stat({ label, value, accent = "slate" }: StatProps) {
   const colors = { 
-    slate: "text-white", 
+    slate: "text-slate-900 font-bold", 
     rose: "text-rose-300", 
     blue: "text-blue-300" 
   };
   
   return (
-    <div className="rounded-2xl border border-slate-800/80 bg-[#0E1320]/80 p-5">
+    <div className="rounded-2xl border border-amber-200/60 shadow-sm bg-[#FFFCF5]/80 p-5">
       <div className="text-[10px] uppercase tracking-wider text-slate-500">{label}</div>
       <div className={`font-display text-2xl mt-2 font-light tabular-nums ${colors[accent]}`}>
         {value}

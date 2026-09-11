@@ -4,6 +4,7 @@ import { connectDB } from "@/lib/mongodb";
 import Project from "@/models/Project";
 import License from "@/models/License";
 import User from "@/models/User";
+import { sendAppAssignmentNotification } from "@/lib/notifications";
 
 async function getSecureContext(req: Request) {
     const token = req.headers.get("cookie")?.split("token=")[1]?.split(";")[0];
@@ -80,6 +81,23 @@ export async function POST(req: Request) {
             ...body,
             workspaceId // Strict Tenant Isolation
         });
+
+        // --- NOTIFICATION LOGIC ---
+        // Notify assigned users about the new project
+        const assignedArray = body.assignedUsers || [];
+        if (assignedArray.length > 0) {
+            const newlyAssignedUsers = await User.find({ _id: { $in: assignedArray } }).lean();
+            for (const u of newlyAssignedUsers) {
+                // We reuse the app assignment utility to keep it simple, 
+                // passing the project name as the "appName".
+                sendAppAssignmentNotification(
+                    u.name || 'User',
+                    u.email,
+                    u.phone,
+                    newProject.name || 'a new project'
+                );
+            }
+        }
 
         return NextResponse.json({ success: true, data: newProject });
     } catch (error: any) {

@@ -109,43 +109,43 @@ export default function ReportsPage() {
     <Layout 
       title="Reports & Analytics" 
       subtitle="Consolidated metrics from Snapshots, Projects, Licenses, and Users"
-      action={
-        <div className="flex bg-[#0E1320] border border-slate-800 rounded-xl p-1 overflow-x-auto">
-          <button onClick={() => setView("monthly")} className={`px-4 py-1.5 text-xs whitespace-nowrap rounded-lg transition ${view === "monthly" ? "bg-blue-500/20 text-blue-300" : "text-slate-400 hover:text-white"}`}>Monthly View</button>
-          <button onClick={() => setView("yearly")} className={`px-4 py-1.5 text-xs whitespace-nowrap rounded-lg transition ${view === "yearly" ? "bg-blue-500/20 text-blue-300" : "text-slate-400 hover:text-white"}`}>Yearly View</button>
-          <button onClick={() => setView("projects")} className={`px-4 py-1.5 text-xs whitespace-nowrap rounded-lg transition ${view === "projects" ? "bg-violet-500/20 text-violet-300" : "text-slate-400 hover:text-white"}`}>Project Reports</button>
-          <button onClick={() => setView("custom")} className={`px-4 py-1.5 text-xs whitespace-nowrap rounded-lg transition ${view === "custom" ? "bg-emerald-500/20 text-emerald-300" : "text-slate-400 hover:text-white"}`}>Custom Export</button>
-        </div>
-      }
     >
+      {/* --- MOVED INTO BODY: View Toggle Buttons --- */}
+      <div className="flex bg-[#FFFCF5] border border-amber-200/60 shadow-sm rounded-xl p-1 overflow-x-auto mb-6 w-max">
+        <button onClick={() => setView("monthly")} className={`px-4 py-1.5 text-xs whitespace-nowrap rounded-lg transition ${view === "monthly" ? "bg-blue-100 text-blue-700 font-bold" : "text-slate-500 hover:text-slate-900 font-medium"}`}>Monthly View</button>
+        <button onClick={() => setView("yearly")} className={`px-4 py-1.5 text-xs whitespace-nowrap rounded-lg transition ${view === "yearly" ? "bg-blue-100 text-blue-700 font-bold" : "text-slate-500 hover:text-slate-900 font-medium"}`}>Yearly View</button>
+        <button onClick={() => setView("projects")} className={`px-4 py-1.5 text-xs whitespace-nowrap rounded-lg transition ${view === "projects" ? "bg-violet-100 text-violet-700 font-bold" : "text-slate-500 hover:text-slate-900 font-medium"}`}>Project Reports</button>
+        <button onClick={() => setView("custom")} className={`px-4 py-1.5 text-xs whitespace-nowrap rounded-lg transition ${view === "custom" ? "bg-emerald-100 text-emerald-700 font-bold" : "text-slate-500 hover:text-slate-900 font-medium"}`}>Custom Export</button>
+      </div>
+
       {/* High-Level Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
-        <div className="bg-[#0E1320]/80 border border-slate-800/80 rounded-2xl p-5 shadow-xl">
-          <div className="flex items-center gap-3 text-slate-400 mb-3">
-            <TrendingUp className="w-5 h-5 text-emerald-400" />
-            <span className="text-sm font-medium">True SaaS Spend (Total Licenses)</span>
+        <div className="bg-[#FFFCF5] border border-amber-200/60 shadow-sm rounded-2xl p-5">
+          <div className="flex items-center gap-3 text-slate-500 mb-3">
+            <TrendingUp className="w-5 h-5 text-emerald-500" />
+            <span className="text-sm font-bold uppercase tracking-wider text-[11px]">True SaaS Spend</span>
           </div>
-          <div className="text-3xl font-display text-white">
+          <div className="text-3xl font-display text-slate-900 font-bold">
             {loading ? "..." : currency(data.metrics?.currentSaasSpend || 0)}
           </div>
         </div>
 
-        <div className="bg-[#0E1320]/80 border border-slate-800/80 rounded-2xl p-5 shadow-xl">
-          <div className="flex items-center gap-3 text-slate-400 mb-3">
-            <FolderKanban className="w-5 h-5 text-violet-400" />
-            <span className="text-sm font-medium">Dynamically Allocated Project Costs</span>
+        <div className="bg-[#FFFCF5] border border-amber-200/60 shadow-sm rounded-2xl p-5">
+          <div className="flex items-center gap-3 text-slate-500 mb-3">
+            <FolderKanban className="w-5 h-5 text-violet-500" />
+            <span className="text-sm font-bold uppercase tracking-wider text-[11px]">Project Allocated Cost</span>
           </div>
-          <div className="text-3xl font-display text-white">
+          <div className="text-3xl font-display text-slate-900 font-bold">
             {loading ? "..." : currency(data.metrics?.totalProjectSpend || 0)}
           </div>
         </div>
 
-        <div className="bg-[#0E1320]/80 border border-slate-800/80 rounded-2xl p-5 shadow-xl">
-          <div className="flex items-center gap-3 text-slate-400 mb-3">
-            <BarChart3 className="w-5 h-5 text-blue-400" />
-            <span className="text-sm font-medium">Total Purchased Licenses</span>
+        <div className="bg-[#FFFCF5] border border-amber-200/60 shadow-sm rounded-2xl p-5">
+          <div className="flex items-center gap-3 text-slate-500 mb-3">
+            <BarChart3 className="w-5 h-5 text-blue-500" />
+            <span className="text-sm font-bold uppercase tracking-wider text-[11px]">Purchased Licenses</span>
           </div>
-          <div className="text-3xl font-display text-white">
+          <div className="text-3xl font-display text-slate-900 font-bold">
             {loading ? "..." : data.metrics?.currentTotalLicenses || 0}
           </div>
         </div>
@@ -153,12 +153,12 @@ export default function ReportsPage() {
 
       {/* --- TIME FILTERS FOR HISTORICAL TABS --- */}
       {(view === "monthly" || view === "yearly") && (
-        <div className="flex items-center gap-4 mb-4">
+        <div className="flex items-center gap-4 mb-4 bg-[#FFFCF5] p-3 rounded-xl border border-amber-200/60 shadow-sm w-max">
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-slate-400" />
-            <span className="text-xs text-slate-400 uppercase tracking-wider">Date Filters:</span>
+            <span className="text-xs text-slate-500 uppercase font-bold tracking-wider">Date Filters:</span>
           </div>
-          <select value={filterYear} onChange={handleYearChange} className="bg-[#0E1320] border border-slate-700 text-sm text-white rounded-lg px-3 py-1.5 outline-none focus:border-blue-500">
+          <select value={filterYear} onChange={handleYearChange} className="bg-white border border-amber-200/60 text-sm text-slate-900 font-bold rounded-lg px-3 py-1.5 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 shadow-sm cursor-pointer">
             {uniqueYears.map(y => <option key={y} value={y}>{y === "All" ? "All Years" : y}</option>)}
           </select>
           {view === "monthly" && (
@@ -166,7 +166,7 @@ export default function ReportsPage() {
               value={filterMonth} 
               onChange={(e) => setFilterMonth(e.target.value)} 
               disabled={filterYear === "All"}
-              className={`bg-[#0E1320] border border-slate-700 text-sm text-white rounded-lg px-3 py-1.5 outline-none focus:border-blue-500 ${filterYear === "All" ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`bg-white border border-amber-200/60 text-sm text-slate-900 font-bold rounded-lg px-3 py-1.5 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 shadow-sm cursor-pointer ${filterYear === "All" ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               <option value="All">All Months</option>
               {["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].map(m => (
@@ -179,35 +179,35 @@ export default function ReportsPage() {
 
       {/* --- TAB 1 & 2: SNAPSHOT TIMELINE --- */}
       {(view === "monthly" || view === "yearly") && (
-        <div className="rounded-2xl border border-slate-800/80 bg-[#0E1320]/80 overflow-hidden shadow-xl">
-          <div className="p-5 border-b border-slate-800/80 flex items-center gap-2 bg-[#111728]/50">
-            <CalendarDays className="w-4 h-4 text-slate-400" />
-            <h2 className="text-sm font-medium text-white">
+        <div className="rounded-2xl border border-amber-200/60 shadow-sm bg-[#FFFCF5] overflow-hidden">
+          <div className="p-5 border-b border-amber-200/60 flex items-center gap-2 bg-white/50">
+            <CalendarDays className="w-4 h-4 text-slate-500" />
+            <h2 className="text-sm text-slate-900 font-bold">
               {view === "monthly" ? "Monthly Snapshot Database" : "Yearly Historical Trends"}
             </h2>
           </div>
           <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[#111728] sticky top-0 z-10">
-                <tr className="text-[10px] uppercase tracking-wider text-slate-500">
-                  <th className="text-left px-5 py-4 font-medium">Period</th>
-                  <th className="text-center px-5 py-4 font-medium">Active Apps</th>
-                  <th className="text-center px-5 py-4 font-medium">Total Purchased Licenses</th>
-                  <th className="text-right px-5 py-4 font-medium">SaaS Spend</th>
+              <thead className="bg-white sticky top-0 z-10 shadow-sm">
+                <tr className="text-[10px] uppercase font-bold tracking-wider text-slate-400 border-b border-slate-200">
+                  <th className="text-left px-5 py-4">Period</th>
+                  <th className="text-center px-5 py-4">Active Apps</th>
+                  <th className="text-center px-5 py-4">Total Purchased Licenses</th>
+                  <th className="text-right px-5 py-4">SaaS Spend</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td colSpan={4} className="px-5 py-10 text-center text-slate-500">Loading snapshot data...</td></tr>
+                  <tr><td colSpan={4} className="px-5 py-10 text-center text-slate-500 font-medium">Loading snapshot data...</td></tr>
                 ) : (view === "monthly" ? filteredMonthly : filteredYearly).length === 0 ? (
-                  <tr><td colSpan={4} className="px-5 py-10 text-center text-slate-500">No data matches these filters.</td></tr>
+                  <tr><td colSpan={4} className="px-5 py-10 text-center text-slate-500 font-medium">No data matches these filters.</td></tr>
                 ) : (
                   (view === "monthly" ? filteredMonthly : filteredYearly).map((row: any, i: number) => (
-                    <tr key={`${row.period}-${i}`} className="border-t border-slate-800/40 hover:bg-white/[0.02] transition">
-                      <td className="px-5 py-4 font-medium text-white">{row.period}</td>
-                      <td className="px-5 py-4 text-center text-slate-400 tabular-nums">{row.apps}</td>
-                      <td className="px-5 py-4 text-center text-slate-400 tabular-nums">{row.licenses}</td>
-                      <td className="px-5 py-4 text-right text-rose-300 tabular-nums font-medium">{currency(row.saasSpend)}</td>
+                    <tr key={`${row.period}-${i}`} className="border-b border-slate-100 hover:bg-white transition-colors">
+                      <td className="px-5 py-4 font-bold text-slate-900">{row.period}</td>
+                      <td className="px-5 py-4 text-center font-medium text-slate-600 tabular-nums">{row.apps}</td>
+                      <td className="px-5 py-4 text-center font-medium text-slate-600 tabular-nums">{row.licenses}</td>
+                      <td className="px-5 py-4 text-right text-rose-600 tabular-nums font-bold">{currency(row.saasSpend)}</td>
                     </tr>
                   ))
                 )}
@@ -219,39 +219,39 @@ export default function ReportsPage() {
 
       {/* --- TAB 3: PROJECTS REPORT --- */}
       {view === "projects" && (
-        <div className="rounded-2xl border border-slate-800/80 bg-[#0E1320]/80 overflow-hidden shadow-xl">
-          <div className="p-5 border-b border-slate-800/80 flex items-center gap-2 bg-[#111728]/50">
-            <Briefcase className="w-4 h-4 text-slate-400" />
-            <h2 className="text-sm font-medium text-white">Project-Wise Reports (Distributed License Cost)</h2>
+        <div className="rounded-2xl border border-amber-200/60 shadow-sm bg-[#FFFCF5] overflow-hidden">
+          <div className="p-5 border-b border-amber-200/60 flex items-center gap-2 bg-white/50">
+            <Briefcase className="w-4 h-4 text-slate-500" />
+            <h2 className="text-sm text-slate-900 font-bold">Project-Wise Reports (Distributed License Cost)</h2>
           </div>
           <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[#111728] sticky top-0 z-10">
-                <tr className="text-[10px] uppercase tracking-wider text-slate-500">
-                  <th className="text-left px-5 py-4 font-medium">Project Name</th>
-                  <th className="text-left px-5 py-4 font-medium">Department</th>
-                  <th className="text-center px-5 py-4 font-medium">Assigned Users</th>
-                  <th className="text-right px-5 py-4 font-medium">Allocated Monthly Software Cost</th>
+              <thead className="bg-white sticky top-0 z-10 shadow-sm">
+                <tr className="text-[10px] uppercase font-bold tracking-wider text-slate-400 border-b border-slate-200">
+                  <th className="text-left px-5 py-4">Project Name</th>
+                  <th className="text-left px-5 py-4">Department</th>
+                  <th className="text-center px-5 py-4">Assigned Users</th>
+                  <th className="text-right px-5 py-4">Allocated Monthly Cost</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td colSpan={4} className="px-5 py-10 text-center text-slate-500">Loading project data...</td></tr>
+                  <tr><td colSpan={4} className="px-5 py-10 text-center text-slate-500 font-medium">Loading project data...</td></tr>
                 ) : data.rawProjects.length === 0 ? (
-                  <tr><td colSpan={4} className="px-5 py-10 text-center text-slate-500">No projects found in this workspace.</td></tr>
+                  <tr><td colSpan={4} className="px-5 py-10 text-center text-slate-500 font-medium">No projects found in this workspace.</td></tr>
                 ) : (
                   data.rawProjects.map((proj: any, i: number) => {
                     return (
-                      <tr key={proj._id || i} className="border-t border-slate-800/40 hover:bg-white/[0.02] transition">
-                        <td className="px-5 py-4 font-medium text-white">{proj.name || proj.projectName || "Unnamed Project"}</td>
-                        <td className="px-5 py-4 text-slate-400">{proj.department || "General"}</td>
+                      <tr key={proj._id || i} className="border-b border-slate-100 hover:bg-white transition-colors">
+                        <td className="px-5 py-4 font-bold text-slate-900">{proj.name || proj.projectName || "Unnamed Project"}</td>
+                        <td className="px-5 py-4 font-medium text-slate-600">{proj.department || "General"}</td>
                         <td className="px-5 py-4 text-center">
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-slate-800 text-slate-300">
-                            <Users className="w-3 h-3" /> {proj.memberCount || 0}
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs bg-white border border-amber-200/60 shadow-sm font-bold text-slate-700">
+                            <Users className="w-3.5 h-3.5 text-slate-400" /> {proj.memberCount || 0}
                           </span>
                         </td>
-                        <td className="px-5 py-4 text-right text-emerald-400 tabular-nums font-bold">
-                          {currency(proj.allocatedCost || 0)} <span className="text-[10px] text-slate-500 font-normal">/mo</span>
+                        <td className="px-5 py-4 text-right text-emerald-600 tabular-nums font-bold">
+                          {currency(proj.allocatedCost || 0)} <span className="text-[10px] text-slate-400 font-medium">/mo</span>
                         </td>
                       </tr>
                     );
@@ -265,18 +265,18 @@ export default function ReportsPage() {
 
       {/* --- TAB 4: CUSTOM REPORT GENERATOR --- */}
       {view === "custom" && (
-        <div className="rounded-2xl border border-slate-800/80 bg-[#0E1320]/80 overflow-hidden shadow-xl">
-          <div className="p-5 border-b border-slate-800/80 flex flex-wrap items-center justify-between gap-4 bg-[#111728]/50">
+        <div className="rounded-2xl border border-amber-200/60 shadow-sm bg-[#FFFCF5] overflow-hidden">
+          <div className="p-5 border-b border-amber-200/60 flex flex-wrap items-center justify-between gap-4 bg-white/50">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <Filter className="w-4 h-4 text-slate-400" />
-                <span className="text-xs text-slate-400 uppercase tracking-wider">Refine Data:</span>
+                <span className="text-xs text-slate-500 uppercase font-bold tracking-wider">Refine Data:</span>
               </div>
-              <select value={filterDept} onChange={(e) => setFilterDept(e.target.value)} className="bg-[#0E1320] border border-slate-700 text-sm text-white rounded-lg px-3 py-2 outline-none focus:border-blue-500">
+              <select value={filterDept} onChange={(e) => setFilterDept(e.target.value)} className="bg-white border border-amber-200/60 text-sm text-slate-900 font-bold rounded-lg px-3 py-2 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 shadow-sm cursor-pointer">
                 <option value="" disabled>Department</option>
                 {uniqueDepts.map(d => <option key={d} value={d}>{d}</option>)}
               </select>
-              <select value={filterVendor} onChange={(e) => setFilterVendor(e.target.value)} className="bg-[#0E1320] border border-slate-700 text-sm text-white rounded-lg px-3 py-2 outline-none focus:border-blue-500">
+              <select value={filterVendor} onChange={(e) => setFilterVendor(e.target.value)} className="bg-white border border-amber-200/60 text-sm text-slate-900 font-bold rounded-lg px-3 py-2 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 shadow-sm cursor-pointer">
                 <option value="" disabled>Vendor</option>
                 {uniqueVendors.map(v => <option key={v} value={v}>{v}</option>)}
               </select>
@@ -284,7 +284,7 @@ export default function ReportsPage() {
             
             <button 
               onClick={downloadCSV}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium px-4 py-2 rounded-xl flex items-center gap-2 transition shadow-lg shadow-emerald-900/20"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm px-4 py-2 rounded-xl flex items-center gap-2 transition shadow-sm"
             >
               <Download className="w-4 h-4" /> Export to CSV
             </button>
@@ -292,18 +292,18 @@ export default function ReportsPage() {
 
           <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[#111728] sticky top-0 z-10">
-                <tr className="text-[10px] uppercase tracking-wider text-slate-500">
-                  <th className="text-left px-5 py-3 font-medium">Application</th>
-                  <th className="text-left px-5 py-3 font-medium">Vendor</th>
-                  <th className="text-left px-5 py-3 font-medium">Dept</th>
-                  <th className="text-center px-5 py-3 font-medium">Utilization</th>
-                  <th className="text-right px-5 py-3 font-medium">Monthly Cost</th>
+              <thead className="bg-white sticky top-0 z-10 shadow-sm">
+                <tr className="text-[10px] uppercase font-bold tracking-wider text-slate-400 border-b border-slate-200">
+                  <th className="text-left px-5 py-3">Application</th>
+                  <th className="text-left px-5 py-3">Vendor</th>
+                  <th className="text-left px-5 py-3">Dept</th>
+                  <th className="text-center px-5 py-3">Utilization</th>
+                  <th className="text-right px-5 py-3">Monthly Cost</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredLicenses.length === 0 ? (
-                  <tr><td colSpan={5} className="px-5 py-10 text-center text-slate-500">No applications match these filters.</td></tr>
+                  <tr><td colSpan={5} className="px-5 py-10 text-center text-slate-500 font-medium">No applications match these filters.</td></tr>
                 ) : (
                   filteredLicenses.map((lic: any) => {
                     const utilization = lic.licenseCount > 0 ? Math.round((lic.assignedUsers / lic.licenseCount) * 100) : 0;
@@ -314,16 +314,16 @@ export default function ReportsPage() {
                     const totalCost = (lic.licenseCount || 1) * monthlyEquivalent;
                     
                     return (
-                      <tr key={lic._id} className="border-t border-slate-800/40 hover:bg-white/[0.02]">
-                        <td className="px-5 py-4 font-medium text-white">{lic.applicationName}</td>
-                        <td className="px-5 py-4 text-slate-400">{lic.vendor}</td>
-                        <td className="px-5 py-4 text-slate-400">{lic.department}</td>
+                      <tr key={lic._id} className="border-b border-slate-100 hover:bg-white transition-colors">
+                        <td className="px-5 py-4 font-bold text-slate-900">{lic.applicationName}</td>
+                        <td className="px-5 py-4 font-medium text-slate-600">{lic.vendor}</td>
+                        <td className="px-5 py-4 font-medium text-slate-600">{lic.department}</td>
                         <td className="px-5 py-4 text-center">
-                          <span className={`px-2.5 py-1 rounded-md text-xs font-medium ${utilization >= 80 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : utilization < 40 ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}`}>
+                          <span className={`px-2.5 py-1.5 rounded-lg text-xs font-bold border ${utilization >= 80 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : utilization < 40 ? 'bg-rose-50 text-rose-700 border-rose-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
                             {lic.assignedUsers} / {lic.licenseCount} ({utilization}%)
                           </span>
                         </td>
-                        <td className="px-5 py-4 text-right text-white tabular-nums">{currency(totalCost)}</td>
+                        <td className="px-5 py-4 text-right text-slate-900 font-bold tabular-nums">{currency(totalCost)}</td>
                       </tr>
                     )
                   })

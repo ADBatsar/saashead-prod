@@ -8,6 +8,7 @@ const VendorSchema = new mongoose.Schema(
     website: { type: String },
     contactName: { type: String },
     contactEmail: { type: String },
+    contactPhone: { type: String }, // <-- ADDED THIS LINE
     status: { type: String, enum: ["Active", "Under Review", "Terminated"], default: "Active" },
   },
   { timestamps: true }

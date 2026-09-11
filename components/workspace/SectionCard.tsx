@@ -1,9 +1,9 @@
 "use client";
 
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 
 interface SectionCardProps {
-  title?: ReactNode;
+  title: ReactNode;
   action?: ReactNode;
   children: ReactNode;
   className?: string;
@@ -20,21 +20,18 @@ export default function SectionCard({
   return (
     <div
       data-testid={testId}
-      className={`rounded-2xl border border-slate-800/80 bg-[#0E1320]/80 p-6 shadow-lg ${className}`}
+      className={`bg-[#FFFCF5] border border-amber-200/60 rounded-2xl shadow-sm p-6 flex flex-col ${className}`}
     >
-      {(title || action) && (
-        <div className="flex items-center justify-between mb-5">
-          {title && (
-            <div className="font-display text-base font-medium text-white tracking-tight">
-              {title}
-            </div>
-          )}
+      <div className="flex items-center justify-between mb-6">
+        {/* THE FIX: Changed text-white to text-slate-900 here */}
+        <h2 className="text-lg font-bold text-slate-900">{title}</h2>
 
-          {action}
-        </div>
-      )}
+        {action && <div>{action}</div>}
+      </div>
 
-      {children}
+      <div className="flex-1 flex flex-col min-h-0">
+        {children}
+      </div>
     </div>
   );
 }

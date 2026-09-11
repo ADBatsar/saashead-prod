@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import Layout from "@/components/workspace/Layout";
-import VendorBadge from "@/components/workspace/VendorBadge";
 import { PiggyBank, AlertTriangle, Layers, TrendingDown, ArrowRight } from "lucide-react";
 import { currency } from "@/lib/utils";
 
@@ -123,12 +122,12 @@ export default function CostOptimizationPage() {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
         {cards.map((c) => (
-          <div key={c.l} className="relative overflow-hidden rounded-2xl border border-slate-800/80 bg-[#0E1320]/90 p-6 shadow-2xl">
+          <div key={c.l} className="relative overflow-hidden rounded-2xl border border-amber-200/60 shadow-sm bg-[#FFFCF5]/90 p-6 shadow-2xl">
             <div className={`absolute -top-10 -right-10 w-48 h-48 ${ORB[c.accent as keyof typeof ORB]} blur-3xl rounded-full`} />
             <div className="relative flex items-start justify-between">
               <div>
                 <div className="text-[10px] uppercase tracking-[0.18em] text-slate-500">{c.l}</div>
-                <div className="mt-3 font-display text-3xl text-white font-light tabular-nums">
+                <div className="mt-3 font-display text-3xl text-slate-900 font-light tabular-nums">
                   {loading ? "..." : currency(c.v)}
                   <span className="text-sm text-slate-500 ml-1">{c.sub}</span>
                 </div>
@@ -145,10 +144,10 @@ export default function CostOptimizationPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-6">
         
         {/* Unused Licenses Recovery */}
-        <div className="rounded-2xl border border-slate-800/80 bg-[#0E1320]/80 overflow-hidden shadow-xl flex flex-col">
-          <div className="p-5 border-b border-slate-800/80 flex items-center justify-between">
+        <div className="rounded-2xl border border-amber-200/60 shadow-sm bg-[#FFFCF5]/80 overflow-hidden shadow-xl flex flex-col">
+          <div className="p-5 border-b border-amber-200/60 shadow-sm flex items-center justify-between">
             <div>
-              <h3 className="font-display text-white font-medium">Unused License Recovery</h3>
+              <h3 className="font-display text-slate-900 font-medium">Unused License Recovery</h3>
               <p className="text-xs text-slate-500 mt-0.5">Seats paid for but not assigned to users.</p>
             </div>
             <span className="bg-rose-500/10 text-rose-400 text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">High Priority</span>
@@ -156,7 +155,7 @@ export default function CostOptimizationPage() {
           
           <div className="overflow-x-auto flex-1">
             <table className="w-full text-sm text-left">
-              <thead className="bg-[#111728] border-b border-slate-800/80">
+              <thead className="bg-[#111728] border-b border-amber-200/60 shadow-sm">
                 <tr className="text-[10px] uppercase tracking-wider text-slate-500">
                   <th className="px-5 py-3 font-medium">Application</th>
                   <th className="px-5 py-3 font-medium text-center">Unused Seats</th>
@@ -165,13 +164,12 @@ export default function CostOptimizationPage() {
               </thead>
               <tbody className="divide-y divide-slate-800/60">
                 {unusedApps.length > 0 ? unusedApps.map(app => (
-                  <tr key={app._id} className="hover:bg-white/[0.02] transition">
+                  <tr key={app._id} className="hover:bg-amber-50 transition">
                     <td className="px-5 py-3 flex items-center gap-3">
-                      <VendorBadge name={app.vendor} size={28} />
-                      <span className="text-slate-200 font-medium">{app.applicationName}</span>
+                      <span className="text-slate-900 font-bold font-medium">{app.applicationName}</span>
                     </td>
                     <td className="px-5 py-3 text-center">
-                      <span className="bg-white/5 text-slate-300 px-2 py-0.5 rounded-md tabular-nums">{app.unusedSeats}</span>
+                      <span className="bg-white/5 text-slate-600 font-medium px-2 py-0.5 rounded-md tabular-nums">{app.unusedSeats}</span>
                     </td>
                     <td className="px-5 py-3 text-right text-rose-400 font-medium tabular-nums">
                       {currency(app.waste)}
@@ -190,10 +188,10 @@ export default function CostOptimizationPage() {
         </div>
 
         {/* Duplicate Tool Overlap */}
-        <div className="rounded-2xl border border-slate-800/80 bg-[#0E1320]/80 overflow-hidden shadow-xl flex flex-col">
-          <div className="p-5 border-b border-slate-800/80 flex items-center justify-between">
+        <div className="rounded-2xl border border-amber-200/60 shadow-sm bg-[#FFFCF5]/80 overflow-hidden shadow-xl flex flex-col">
+          <div className="p-5 border-b border-amber-200/60 shadow-sm flex items-center justify-between">
             <div>
-              <h3 className="font-display text-white font-medium">Category Overlap Analysis</h3>
+              <h3 className="font-display text-slate-900 font-medium">Category Overlap Analysis</h3>
               <p className="text-xs text-slate-500 mt-0.5">Multiple tools serving the same function.</p>
             </div>
             <span className="bg-amber-500/10 text-amber-400 text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">Review Required</span>
@@ -201,32 +199,30 @@ export default function CostOptimizationPage() {
 
           <div className="overflow-x-auto flex-1 p-5 space-y-4">
             {duplicateCategories.length > 0 ? duplicateCategories.map(cat => (
-              <div key={cat.category} className="border border-slate-800/80 bg-[#111728]/50 rounded-xl p-4">
+              <div key={cat.category} className="border border-amber-200/60 shadow-sm bg-[#111728]/50 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{cat.category}</span>
+                  <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">{cat.category}</span>
                   <span className="text-sm font-medium text-amber-400">Save {currency(cat.potentialSavings)}/mo</span>
                 </div>
                 
                 <div className="flex items-center justify-between gap-4">
                   {/* Primary Tool */}
-                  <div className="flex-1 bg-[#0E1320] border border-emerald-500/20 rounded-lg p-3">
+                  <div className="flex-1 bg-[#FFFCF5] border border-emerald-500/20 rounded-lg p-3">
                     <div className="text-[10px] text-emerald-400 uppercase tracking-wider mb-2 font-semibold">Primary Tool</div>
                     <div className="flex items-center gap-2">
-                      <VendorBadge name={cat.primary.vendor} size={24} />
-                      <span className="text-sm text-slate-200">{cat.primary.applicationName}</span>
+                      <span className="text-sm text-slate-900 font-bold">{cat.primary.applicationName}</span>
                     </div>
                   </div>
                   
                   <ArrowRight className="w-5 h-5 text-slate-600 flex-shrink-0" />
                   
                   {/* Redundant Tools */}
-                  <div className="flex-1 bg-[#0E1320] border border-rose-500/20 rounded-lg p-3 space-y-2">
+                  <div className="flex-1 bg-[#FFFCF5] border border-rose-500/20 rounded-lg p-3 space-y-2">
                     <div className="text-[10px] text-rose-400 uppercase tracking-wider font-semibold">Consolidate These</div>
                     {cat.redundancies.map((r: any) => (
                       <div key={r._id} className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <VendorBadge name={r.vendor} size={20} />
-                          <span className="text-xs text-slate-300">{r.applicationName}</span>
+                          <span className="text-xs text-slate-600 font-medium">{r.applicationName}</span>
                         </div>
                       </div>
                     ))}
