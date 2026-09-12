@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /register
+Allow: /forgot-password
+Disallow: /api/
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /renewals
+Disallow: /applications
+Disallow: /cost-optimization
+Disallow: /import-export
+Disallow: /licenses
+Disallow: /projects
+Disallow: /reports
+Disallow: /users
+Disallow: /vendors
+Disallow: /ai-copilot
+Disallow: /administration
+
+Sitemap: https://headsaas.com/sitemap.xml
