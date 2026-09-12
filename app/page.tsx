@@ -18,27 +18,100 @@ const PILLARS = [
   { icon: ShieldCheck, t: "Bank-grade Security", d: "AES-256 at rest, TLS 1.3 in transit, SOC 2 controls, MFA via authenticator, optional SSO." },
   { icon: Lock, t: "Read-only by Design", d: "We never modify vendor billing or settings. Everything is observational." },
   { icon: Award, t: "Scalable Pricing", d: "Start for free and smoothly upgrade as your team, vendors, and applications grow." },
-  { icon: Eye, t: "Total Visibility", d: "One dashboard for every vendor, contract, renewal and license." },
+  { icon: Eye, t: "Total Visibility", d: "Unified software tracking dashboard for every vendor, license agreement, active subscription, and contract renewal." },
 ];
 
 const FEATURES = [
-  { icon: TrendingDown, t: "Cut SaaS Spend", d: "Identify unused licenses and reduce waste automatically." },
-  { icon: Building2, t: "Projects", d: "Allocate software cost to individual projects." },
-  { icon: Zap, t: "Real-time Alerts", d: "Renewals, expiring licenses and spending alerts." },
+  { icon: TrendingDown, t: "Cut SaaS Spend", d: "Identify underutilized seats, detect inactive users, and automatically reduce SaaS waste to recover valuable IT budget." },
+  { icon: Building2, t: "Proportional Costs", d: "Distribute and allocate exact software license and subscription costs proportionally to individual project budgets and department cost centers." },
+  { icon: Zap, t: "Real-time Alerts", d: "Track contract timelines using an interactive renewals calendar with automated, real-time alerts for impending expirations or budget threshold breaches." },
 ];
 
-const QUOTES = [
-  { q: "Finally a SaaS management tool that doesn't upsell.", a: "CIO" },
-  { q: "We discovered thousands of dollars in unused licenses.", a: "VP IT" },
-  { q: "Exactly the visibility our procurement team needed.", a: "Procurement Director" },
+const INTEGRATIONS = [
+  { name: "Salesforce", desc: "Natively synchronize CRM accounts, seat metrics, and recurring licensing costs automatically." },
+  { name: "SAP", desc: "Align enterprise SaaS governance with strict financial ledgers, corporate procurement, and ERP processes." },
+  { name: "Microsoft 365", desc: "Directly audit active Microsoft 365 user licenses, identify duplicate seats, and reclaim inactive licenses instantly." },
+  { name: "Google Workspace", desc: "Govern user directories, track application delegation, and secure third-party permissions across your organization." },
+  { name: "Slack", desc: "Analyze workspace collaboration engagement, discover inactive channels, and eliminate duplicate guest user fees." },
+  { name: "Jira", desc: "Track active Atlassian software development seats and allocate engineering licensing overhead to specific project cost centers." },
+  { name: "Okta", desc: "Leverage single sign-on (SSO) context to map user accounts, secure authentication state, and automate employee offboarding." },
+  { name: "ServiceNow", desc: "Integrate IT service management (ITSM) workflows with automatic license request audits and compliance trails." },
 ];
 
 const PRICING_TIERS = [
-  { name: "Free", seats: "1", members: "50", vendors: "50", apps: "25", price: "$0" },
-  { name: "Pro", seats: "3", members: "100", vendors: "100", apps: "100", price: "$10/mo" },
-  { name: "Team", seats: "4-9", members: "Unlimited", vendors: "Unlimited", apps: "Unlimited", price: "$90/user/yr", sub: "(annual only)" },
-  { name: "Business", seats: "10-49", members: "Unlimited", vendors: "Unlimited", apps: "Unlimited", price: "$8/user/mo", sub: "or $80/user/yr (10+2 free)" },
-  { name: "Enterprise", seats: "50+", members: "Unlimited", vendors: "Unlimited", apps: "Custom", price: "Custom" }
+  {
+    name: "Free",
+    seats: "1",
+    members: "50",
+    vendors: "50",
+    apps: "25",
+    price: "$0",
+    period: "",
+    sub: "Free forever"
+  },
+  {
+    name: "Pro",
+    seats: "3",
+    members: "100",
+    vendors: "100",
+    apps: "100",
+    price: "$10",
+    period: "/ month",
+    sub: "Billed monthly"
+  },
+  {
+    name: "Team",
+    seats: "4–9",
+    members: "Unlimited",
+    vendors: "Unlimited",
+    apps: "Unlimited",
+    price: "$90",
+    period: "/ user / year",
+    sub: "Billed annually"
+  },
+  {
+    name: "Business",
+    seats: "10–49",
+    members: "Unlimited",
+    vendors: "Unlimited",
+    apps: "Unlimited",
+    price: "$8",
+    period: "/ user / month",
+    sub: "Billed monthly or $80 / user / year (2 months free)"
+  },
+  {
+    name: "Enterprise",
+    seats: "50+",
+    members: "Unlimited",
+    vendors: "Unlimited",
+    apps: "Custom",
+    price: "Custom",
+    period: "",
+    sub: "Contact sales for pricing"
+  }
+];
+
+const FAQS = [
+  {
+    q: "What is HeadSaaS?",
+    a: "HeadSaaS is an enterprise-grade SaaS Management Platform (SMP). It helps organizations discover shadow IT, optimize seat licenses, automate employee offboarding, track contract renewals, and cut software spend instantly."
+  },
+  {
+    q: "Does HeadSaaS support Salesforce and SAP integration?",
+    a: "Yes. HeadSaaS integrates natively with Salesforce and SAP to automatically align SaaS governance and software usage with procurement, finance, and CRM workflows."
+  },
+  {
+    q: "Can I automatically discover Shadow IT?",
+    a: "Absolutely. HeadSaaS runs non-invasive, read-only audit scans across your organization to automatically identify unauthorized, unmanaged, or duplicate SaaS applications, giving your IT team full visibility."
+  },
+  {
+    q: "How does the renewals tracker work?",
+    a: "HeadSaaS features a centralized software renewals calendar with automated, real-time alerts. It proactively notifies you about upcoming expiration dates and contract terms, preventing accidental auto-renewals."
+  },
+  {
+    q: "Is there a completely free option?",
+    a: "Yes. Our Free tier includes 1 seat, and supports up to 50 members, 50 vendors, and 25 applications with full visibility. You can smoothly upgrade to our Pro or Enterprise plans as your workspace grows."
+  }
 ];
 
 export default function Home() {
@@ -62,13 +135,25 @@ export default function Home() {
         </div>
 
         <div className="flex gap-4 items-center">
+          <a href="#how-it-works" className="text-sm font-medium hover:text-violet-600 transition hidden lg:block mr-2">
+            How It Works
+          </a>
+          <a href="#solutions" className="text-sm font-medium hover:text-violet-600 transition hidden lg:block mr-2">
+            Solutions
+          </a>
           <a href="#pricing" className="text-sm font-medium hover:text-violet-600 transition hidden sm:block mr-2">
             Pricing
+          </a>
+          <a href="#integrations" className="text-sm font-medium hover:text-violet-600 transition hidden sm:block mr-2">
+            Integrations
+          </a>
+          <a href="#faq" className="text-sm font-medium hover:text-violet-600 transition hidden sm:block mr-2">
+            FAQ
           </a>
           {/* NEW CONTACT US BUTTON */}
           <button 
             onClick={() => setIsContactOpen(true)} 
-            className="text-sm font-medium hover:text-violet-600 transition hidden sm:block mr-4 cursor-pointer"
+            className="text-sm font-medium hover:text-violet-600 transition hidden sm:block mr-4 cursor-pointer text-left bg-transparent border-0 font-sans"
           >
             Contact Us
           </button>
@@ -84,20 +169,20 @@ export default function Home() {
 
       {/* HERO */}
       <section className="max-w-7xl mx-auto px-6 pt-20 pb-24">
-        <div className="inline-flex items-center gap-2 rounded-full bg-amber-200 px-5 py-2 mb-8">
+        <div className="inline-flex items-center gap-2 rounded-full bg-amber-200 px-5 py-2 mb-8 text-sm font-medium">
           <Sparkles size={15}/> Start for Free
         </div>
 
         <h1 className="text-7xl font-light leading-tight">
-          Stop bleeding money to
-          <span className="italic text-violet-700">{" "}SaaS sprawl</span>
+          Bring balance to your
+          <span className="italic text-violet-700">{" "}software footprint</span>
           <br/>
           Start leading with
-          <span className="bg-gradient-to-r from-amber-500 to-violet-600 bg-clip-text text-transparent">{" "}clarity</span>
+          <span className="bg-gradient-to-r from-amber-500 to-violet-600 bg-clip-text text-transparent">{" "}absolute clarity</span>
         </h1>
 
         <p className="text-xl mt-8 text-slate-600 max-w-3xl">
-          HeadSaaS gives CIOs and IT leaders one trusted place to manage every application, license, renewal and vendor.
+          HeadSaaS is a next-generation SaaS Management Platform (SMP) that empowers CIOs, IT leaders, and procurement managers to discover shadow IT, optimize software license utilization, track renewals, and cut waste automatically.
         </p>
 
         <div className="flex gap-4 mt-10">
@@ -109,11 +194,11 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* STATS */}
+        {/* STATS (Optimized Semantic HTML - Replaced h2 with div) */}
         <div className="grid md:grid-cols-4 gap-5 mt-20">
           {STATS.map((s)=>(
             <div key={s.l} className="bg-white rounded-2xl p-6 border border-amber-200/60 shadow-sm">
-              <h2 className="text-4xl font-bold">{s.v}</h2>
+              <div className="text-4xl font-bold text-slate-900">{s.v}</div>
               <p className="text-gray-500 mt-2">{s.l}</p>
             </div>
           ))}
@@ -152,8 +237,187 @@ export default function Home() {
         </div>
       </section>
 
+      {/* HOW IT WORKS */}
+      <section id="how-it-works" className="max-w-7xl mx-auto px-6 py-24 relative z-10 border-t border-amber-200/40">
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 rounded-full bg-violet-100 text-violet-700 px-5 py-2 mb-4 font-medium text-sm">
+            Implementation Journey
+          </div>
+          <h2 className="text-5xl font-light text-slate-900 leading-tight">
+            SaaS Spend Optimization in <span className="italic text-violet-700">Four Simple Steps</span>
+          </h2>
+          <p className="text-xl text-slate-600 mt-4 max-w-2xl mx-auto">
+            Getting full visibility and control over your enterprise software footprint takes less than fifteen minutes.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="bg-white rounded-3xl p-8 border border-amber-200/60 shadow-sm flex flex-col justify-between hover:border-violet-300 transition duration-300">
+            <div>
+              <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-600 font-bold text-xl mb-6 font-mono">1</div>
+              <h3 className="text-2xl font-bold text-slate-900 mb-4">Secure Connection</h3>
+              <p className="text-slate-600 leading-relaxed text-sm">
+                Natively connect your core SSO, identity providers (Okta, Google Workspace), and cloud financial suites via secure, read-only APIs in just a few clicks.
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-3xl p-8 border border-amber-200/60 shadow-sm flex flex-col justify-between hover:border-violet-300 transition duration-300">
+            <div>
+              <div className="w-12 h-12 rounded-2xl bg-violet-100 flex items-center justify-center text-violet-600 font-bold text-xl mb-6 font-mono">2</div>
+              <h3 className="text-2xl font-bold text-slate-900 mb-4">Instant Discovery</h3>
+              <p className="text-slate-600 leading-relaxed text-sm">
+                Our passive discovery scanning engines automatically map every software license, shadow IT subscription, and duplicate user account in real-time.
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-3xl p-8 border border-amber-200/60 shadow-sm flex flex-col justify-between hover:border-violet-300 transition duration-300">
+            <div>
+              <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-600 font-bold text-xl mb-6 font-mono">3</div>
+              <h3 className="text-2xl font-bold text-slate-900 mb-4">Deep Optimization</h3>
+              <p className="text-slate-600 leading-relaxed text-sm">
+                Identify underutilized seat licenses, track exact application engagement, and allocate license costs proportionally to departments or active project budgets.
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-3xl p-8 border border-amber-200/60 shadow-sm flex flex-col justify-between hover:border-violet-300 transition duration-300">
+            <div>
+              <div className="w-12 h-12 rounded-2xl bg-violet-100 flex items-center justify-center text-violet-600 font-bold text-xl mb-6 font-mono">4</div>
+              <h3 className="text-2xl font-bold text-slate-900 mb-4">Proactive Control</h3>
+              <p className="text-slate-600 leading-relaxed text-sm">
+                Configure a centralized renewals calendar, set automated expiration alerts, and execute zero-friction offboarding to immediately reclaim active user seats.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SOLUTIONS SECTION */}
+      <section id="solutions" className="max-w-7xl mx-auto px-6 py-24 relative z-10 border-t border-amber-200/40">
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 rounded-full bg-amber-200 text-amber-800 px-5 py-2 mb-4 font-medium text-sm">
+            Tailored Solutions
+          </div>
+          <h2 className="text-5xl font-light text-slate-900 leading-tight">
+            Empowering Every <span className="italic text-violet-700">Enterprise Stakeholder</span>
+          </h2>
+          <p className="text-xl text-slate-600 mt-4 max-w-2xl mx-auto">
+            HeadSaaS bridges the gap between IT operations, financial governance, and procurement teams to drive maximum software value.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          <div className="bg-slate-900 rounded-3xl p-8 text-white shadow-lg border border-slate-800 flex flex-col justify-between">
+            <div>
+              <div className="w-12 h-12 rounded-2xl bg-violet-600 flex items-center justify-center text-white mb-6">
+                <ShieldCheck size={24} />
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-white">For IT Leaders & CIOs</h3>
+              <p className="text-gray-400 leading-relaxed mb-6 text-sm">
+                Govern your entire software ecosystem from a single pane of glass. Eliminate security vulnerabilities from rogue shadow IT, enforce strict identity policies, and support audits with detailed license request history.
+              </p>
+            </div>
+            <ul className="space-y-3 text-sm text-gray-300 border-t border-slate-800 pt-6">
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                Automated Shadow IT Discovery
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                SOC 2 & MFA Access Controls
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                Instant Deprovisioning Workflows
+              </li>
+            </ul>
+          </div>
+
+          <div className="bg-slate-900 rounded-3xl p-8 text-white shadow-lg border border-slate-800 flex flex-col justify-between">
+            <div>
+              <div className="w-12 h-12 rounded-2xl bg-amber-400 flex items-center justify-center text-slate-950 mb-6">
+                <TrendingDown size={24} />
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-white">For Finance & CFOs</h3>
+              <p className="text-gray-400 leading-relaxed mb-6 text-sm">
+                Take complete charge of SaaS cash-outflow and budget predictability. Automatically detect unused licenses to stop billing leaks, and allocate exact subscription costs dynamically to correct departments or client projects.
+              </p>
+            </div>
+            <ul className="space-y-3 text-sm text-gray-300 border-t border-slate-800 pt-6">
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                Proportional Cost Allocation
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                Detailed ROI & Spend Analytics
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                Monthly Financial Snapshots
+              </li>
+            </ul>
+          </div>
+
+          <div className="bg-slate-900 rounded-3xl p-8 text-white shadow-lg border border-slate-800 flex flex-col justify-between">
+            <div>
+              <div className="w-12 h-12 rounded-2xl bg-violet-600 flex items-center justify-center text-white mb-6">
+                <Building2 size={24} />
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-white">For Procurement & Sourcing</h3>
+              <p className="text-gray-400 leading-relaxed mb-6 text-sm">
+                Approach software contract negotiations with raw usage data. Track expiration parameters across SAP, Salesforce, and other key suites, ensuring zero accidental auto-renewals and optimized contractual volumes.
+              </p>
+            </div>
+            <ul className="space-y-3 text-sm text-gray-300 border-t border-slate-800 pt-6">
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                Dynamic Software Renewals Tracker
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                AI PDF Contract Term Extraction
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                Vendor Concentration Indexing
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* INTEGRATIONS SECTION */}
+      <section id="integrations" className="max-w-7xl mx-auto px-6 py-24 relative z-10 border-t border-amber-200/40">
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 rounded-full bg-violet-100 text-violet-700 px-5 py-2 mb-4 font-medium text-sm">
+            Enterprise Integrations
+          </div>
+          <h2 className="text-5xl font-light text-slate-900 leading-tight">
+            Connect your entire <span className="italic text-violet-700">software ecosystem</span>
+          </h2>
+          <p className="text-xl text-slate-600 mt-4 max-w-2xl mx-auto">
+            HeadSaaS integrates seamlessly with your critical identity, CRM, ERP, and collaboration suites.
+          </p>
+        </div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {INTEGRATIONS.map((item) => (
+            <div
+              key={item.name}
+              className="bg-white rounded-3xl p-8 border border-amber-200/60 shadow-sm hover:border-violet-300 hover:shadow-md transition duration-300"
+            >
+              <h3 className="text-xl font-bold text-slate-900 mb-3">{item.name}</h3>
+              <p className="text-slate-600 text-sm leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* PRICING SECTION */}
-      <section id="pricing" className="max-w-6xl mx-auto px-6 py-24 relative z-10">
+      <section id="pricing" className="max-w-6xl mx-auto px-6 py-24 relative z-10 border-t border-amber-200/40">
         <div className="text-center mb-16">
           <h2 className="text-5xl font-light text-slate-900">Simple, Transparent Pricing</h2>
           <p className="text-xl text-slate-600 mt-4">Choose the perfect plan for your workspace size.</p>
@@ -180,13 +444,55 @@ export default function Home() {
                   <td className="py-6 px-6 text-slate-600 font-medium">{tier.vendors}</td>
                   <td className="py-6 px-6 text-slate-600 font-medium">{tier.apps}</td>
                   <td className="py-6 px-6 text-slate-900">
-                    <div className="font-bold text-lg">{tier.price}</div>
-                    {tier.sub && <div className="text-xs text-slate-500 mt-1 font-medium">{tier.sub}</div>}
+                    <div className="flex items-baseline gap-1">
+                      <span className="font-bold text-xl text-slate-900 group-hover:text-violet-700 transition-colors">
+                        {tier.price}
+                      </span>
+                      {tier.period && (
+                        <span className="text-xs text-slate-500 font-medium">
+                          {tier.period}
+                        </span>
+                      )}
+                    </div>
+                    {tier.sub && (
+                      <div className="text-xs text-slate-400 mt-1 font-medium leading-tight">
+                        {tier.sub}
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+      </section>
+
+      {/* FAQ SECTION */}
+      <section id="faq" className="max-w-4xl mx-auto px-6 py-24 relative z-10 border-t border-amber-200/40">
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 rounded-full bg-amber-200 px-5 py-2 mb-4 font-medium text-sm">
+            Got Questions?
+          </div>
+          <h2 className="text-5xl font-light text-slate-900">Frequently Asked Questions</h2>
+          <p className="text-lg text-slate-600 mt-4 text-center">
+            Everything you need to know about our best-in-class SaaS management capabilities.
+          </p>
+        </div>
+
+        <div className="space-y-6">
+          {FAQS.map((faq) => (
+            <div
+              key={faq.q}
+              className="bg-white rounded-2xl p-8 border border-amber-200/60 shadow-sm hover:border-amber-300 transition duration-300"
+            >
+              <h3 className="text-xl font-bold text-slate-900 mb-3">
+                {faq.q}
+              </h3>
+              <p className="text-slate-600 leading-relaxed">
+                {faq.a}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -206,7 +512,7 @@ export default function Home() {
 
       <footer className="border-t border-amber-200/60 py-8 text-center text-slate-500 font-medium flex flex-col items-center justify-center gap-4">
         <div className="flex gap-6">
-          <button onClick={() => setIsContactOpen(true)} className="hover:text-violet-600 transition">Contact Support</button>
+          <button onClick={() => setIsContactOpen(true)} className="hover:text-violet-600 transition bg-transparent border-0 cursor-pointer">Contact Support</button>
           <Link href="/login" className="hover:text-violet-600 transition">Sign In</Link>
         </div>
         <div>© 2026 HeadSaaS. All rights reserved.</div>
