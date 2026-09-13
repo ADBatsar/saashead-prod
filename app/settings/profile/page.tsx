@@ -3,13 +3,12 @@
 import React, { useEffect, useState } from "react";
 import Layout from "@/components/workspace/Layout";
 import { useRouter } from "next/navigation";
-import { User, Building, Phone, Mail, ShieldCheck, PauseCircle, Trash2, ShieldAlert } from "lucide-react";
+import { User, Building, Phone, Mail, ShieldCheck } from "lucide-react";
 
 export default function ProfileSettingsPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
 
   const [form, setForm] = useState({
@@ -83,46 +82,6 @@ export default function ProfileSettingsPage() {
     }
   };
 
-  const handleDeactivate = async () => {
-    if (!confirm("Are you sure you want to deactivate your account? You will be logged out immediately, and your profile will be marked as inactive until restored by an Admin.")) return;
-    
-    setIsProcessing(true);
-    try {
-      const res = await fetch("/api/account", { method: "PUT" });
-      if (!res.ok) throw new Error("Failed to deactivate account");
-      
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-      router.push("/");
-    } catch (e: any) {
-      setMessage({ type: "error", text: e.message || "Error deactivating account" });
-      setIsProcessing(false);
-    }
-  };
-
-  const handleDelete = async () => {
-    if (!confirm("CRITICAL WARNING: Are you sure you want to PERMANENTLY delete your account? If you are the Chief, this will wipe all workspace data. This action CANNOT be undone. Type 'DELETE' to confirm.")) return;
-    
-    const verify = prompt("Type 'DELETE' to confirm permanent deletion:");
-    if (verify !== "DELETE") {
-      alert("Deletion cancelled.");
-      return;
-    }
-
-    setIsProcessing(true);
-    try {
-      const res = await fetch("/api/account", { method: "DELETE" });
-      if (!res.ok) throw new Error("Failed to delete account");
-      
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-      router.push("/");
-    } catch (e: any) {
-      setMessage({ type: "error", text: e.message || "Error deleting account" });
-      setIsProcessing(false);
-    }
-  };
-
   if (loading) {
     return (
       <Layout title="Profile Settings" subtitle="Manage your personal and workspace information">
@@ -144,8 +103,8 @@ export default function ProfileSettingsPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           
           {/* Personal Information Section */}
-          <div className="bg-[#FFFCF5] border border-amber-200/60 rounded-2xl overflow-hidden shadow-sm">
-            <div className="px-6 py-4 border-b border-amber-200/60 bg-white/50 flex items-center gap-2 text-slate-900 font-bold">
+          <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+            <div className="px-6 py-4 border-b border-slate-100 bg-slate-50 flex items-center gap-2 text-slate-900 font-bold">
               <User className="w-4 h-4 text-blue-500" />
               Personal Information
             </div>
@@ -160,7 +119,7 @@ export default function ProfileSettingsPage() {
                     required
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="w-full bg-white border border-amber-200/60 shadow-sm rounded-xl pl-10 pr-4 py-2.5 text-sm font-bold text-slate-900 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition"
+                    className="w-full bg-white border border-slate-200 shadow-sm rounded-xl pl-10 pr-4 py-2.5 text-sm font-bold text-slate-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
                   />
                 </div>
               </div>
@@ -187,7 +146,7 @@ export default function ProfileSettingsPage() {
                     value={form.mobileNumber}
                     onChange={(e) => setForm({ ...form, mobileNumber: e.target.value })}
                     placeholder="+1 (555) 000-0000"
-                    className="w-full bg-white border border-amber-200/60 shadow-sm rounded-xl pl-10 pr-4 py-2.5 text-sm font-bold text-slate-900 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition placeholder:text-slate-300 placeholder:font-medium"
+                    className="w-full bg-white border border-slate-200 shadow-sm rounded-xl pl-10 pr-4 py-2.5 text-sm font-bold text-slate-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition placeholder:text-slate-300 placeholder:font-medium"
                   />
                 </div>
               </div>
@@ -195,12 +154,12 @@ export default function ProfileSettingsPage() {
               <div>
                 <label className="text-[10px] uppercase font-bold tracking-wider text-slate-500 block mb-2">System Role</label>
                 <div className="relative">
-                  <ShieldCheck className="w-4 h-4 text-emerald-500 absolute left-3 top-3.5" />
+                  <ShieldCheck className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
                   <input
                     type="text"
                     disabled
                     value={form.role}
-                    className="w-full bg-emerald-50/50 border border-emerald-100 shadow-sm rounded-xl pl-10 pr-4 py-2.5 text-sm font-bold text-emerald-700 outline-none cursor-not-allowed"
+                    className="w-full bg-slate-50 border border-slate-200 shadow-sm rounded-xl pl-10 pr-4 py-2.5 text-sm font-bold text-slate-700 outline-none cursor-not-allowed"
                   />
                 </div>
               </div>
@@ -208,9 +167,9 @@ export default function ProfileSettingsPage() {
           </div>
 
           {/* Company Information Section */}
-          <div className="bg-[#FFFCF5] border border-amber-200/60 rounded-2xl overflow-hidden shadow-sm">
-            <div className="px-6 py-4 border-b border-amber-200/60 bg-white/50 flex items-center gap-2 text-slate-900 font-bold">
-              <Building className="w-4 h-4 text-violet-500" />
+          <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+            <div className="px-6 py-4 border-b border-slate-100 bg-slate-50 flex items-center gap-2 text-slate-900 font-bold">
+              <Building className="w-4 h-4 text-blue-500" />
               Company Details
             </div>
             
@@ -222,7 +181,7 @@ export default function ProfileSettingsPage() {
                   required
                   value={form.companyName}
                   onChange={(e) => setForm({ ...form, companyName: e.target.value })}
-                  className="w-full bg-white border border-amber-200/60 shadow-sm rounded-xl px-4 py-2.5 text-sm font-bold text-slate-900 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition"
+                  className="w-full bg-white border border-slate-200 shadow-sm rounded-xl px-4 py-2.5 text-sm font-bold text-slate-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
                 />
               </div>
 
@@ -231,7 +190,7 @@ export default function ProfileSettingsPage() {
                 <select
                   value={form.companySize}
                   onChange={(e) => setForm({ ...form, companySize: e.target.value })}
-                  className="w-full bg-white border border-amber-200/60 shadow-sm rounded-xl px-4 py-2.5 text-sm font-bold text-slate-900 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition cursor-pointer"
+                  className="w-full bg-white border border-slate-200 shadow-sm rounded-xl px-4 py-2.5 text-sm font-bold text-slate-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition cursor-pointer"
                 >
                   <option value="1-50">1 - 50</option>
                   <option value="51-200">51 - 200</option>
@@ -245,7 +204,7 @@ export default function ProfileSettingsPage() {
                 <select
                   value={form.department}
                   onChange={(e) => setForm({ ...form, department: e.target.value })}
-                  className="w-full bg-white border border-amber-200/60 shadow-sm rounded-xl px-4 py-2.5 text-sm font-bold text-slate-900 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition cursor-pointer"
+                  className="w-full bg-white border border-slate-200 shadow-sm rounded-xl px-4 py-2.5 text-sm font-bold text-slate-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition cursor-pointer"
                 >
                   <option value="IT">IT / Eng</option>
                   <option value="Finance">Finance</option>
@@ -259,7 +218,7 @@ export default function ProfileSettingsPage() {
           <div className="flex justify-end">
             <button
               type="submit"
-              disabled={saving || isProcessing}
+              disabled={saving}
               className="bg-slate-900 hover:bg-black text-white px-8 py-2.5 rounded-xl text-sm font-bold shadow-md transition disabled:opacity-50"
             >
               {saving ? "Saving Changes..." : "Save Changes"}
@@ -267,56 +226,6 @@ export default function ProfileSettingsPage() {
           </div>
 
         </form>
-
-        {/* Danger Zone Section */}
-        <div className="border border-rose-200 bg-rose-50/50 rounded-2xl overflow-hidden shadow-sm mt-12">
-          <div className="px-6 py-4 border-b border-rose-200 bg-rose-100/50 flex items-center gap-2">
-            <ShieldAlert className="w-5 h-5 text-rose-600" />
-            <h3 className="font-bold text-rose-700 uppercase tracking-wider text-sm">Danger Zone</h3>
-          </div>
-          
-          <div className="p-6 space-y-6">
-            
-            {/* Deactivate Option */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <h4 className="text-slate-900 font-bold mb-1">Deactivate Account</h4>
-                <p className="text-sm font-medium text-slate-500">
-                  Temporarily disable your account. You will be logged out, and your seat will be freed up.
-                </p>
-              </div>
-              <button
-                onClick={handleDeactivate}
-                disabled={isProcessing || saving}
-                className="shrink-0 px-5 py-2.5 bg-white border border-amber-300 text-amber-600 hover:bg-amber-50 text-sm font-bold rounded-xl transition flex items-center gap-2 disabled:opacity-50 shadow-sm"
-              >
-                <PauseCircle className="w-4 h-4" />
-                Deactivate
-              </button>
-            </div>
-
-            <hr className="border-rose-200/60" />
-
-            {/* Delete Option */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <h4 className="text-slate-900 font-bold mb-1">Delete Account</h4>
-                <p className="text-sm font-medium text-slate-500">
-                  Permanently remove your account and data. <strong className="text-rose-600">If you are the Chief, this wipes the entire workspace.</strong>
-                </p>
-              </div>
-              <button
-                onClick={handleDelete}
-                disabled={isProcessing || saving}
-                className="shrink-0 px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-sm font-bold rounded-xl transition shadow-md flex items-center gap-2 disabled:opacity-50"
-              >
-                <Trash2 className="w-4 h-4" />
-                Delete Permanently
-              </button>
-            </div>
-
-          </div>
-        </div>
 
       </div>
     </Layout>
