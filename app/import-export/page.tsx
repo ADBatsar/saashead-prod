@@ -15,8 +15,6 @@ export default function DataManagementPage() {
     try {
       const res = await fetch("/api/export");
       
-      // DIAGNOSTIC ERROR CATCHER
-      // This will force the raw server response to show up in an alert box
       if (!res.ok) {
         const rawText = await res.text();
         let errorMsg = `HTTP Error ${res.status}`;
@@ -35,7 +33,6 @@ export default function DataManagementPage() {
       const a = document.createElement("a");
       a.href = url;
 
-      // Extract filename from headers or fallback
       const contentDisposition = res.headers.get("Content-Disposition");
       let filename = "saashead-workspace-backup.json";
       if (contentDisposition && contentDisposition.includes("filename=")) {
@@ -100,53 +97,53 @@ export default function DataManagementPage() {
         
         {/* Status Banners */}
         {importStatus.type === 'success' && (
-          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 flex items-center gap-3 text-emerald-400">
+          <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-center gap-3 text-emerald-700 shadow-sm">
             <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
-            <p className="text-sm font-medium">{importStatus.msg}</p>
+            <p className="text-sm font-bold">{importStatus.msg}</p>
           </div>
         )}
 
         {importStatus.type === 'error' && (
-          <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-4 flex items-center gap-3 text-rose-400">
+          <div className="bg-rose-50 border border-rose-200 rounded-xl p-4 flex items-center gap-3 text-rose-700 shadow-sm">
             <AlertTriangle className="w-5 h-5 flex-shrink-0" />
-            <p className="text-sm font-medium">{importStatus.msg}</p>
+            <p className="text-sm font-bold">{importStatus.msg}</p>
           </div>
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           
           {/* EXPORT CARD */}
-          <div className="bg-[#111520]/80 border border-slate-800 rounded-2xl p-8 flex flex-col items-center text-center shadow-lg hover:border-blue-500/30 transition">
-            <div className="w-16 h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6">
-              <DownloadCloud className="w-8 h-8 text-blue-400" />
+          <div className="bg-white border border-slate-200 rounded-2xl p-8 flex flex-col items-center text-center shadow-sm hover:shadow-md hover:border-blue-300 transition group">
+            <div className="w-16 h-16 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center mb-6 group-hover:bg-blue-100 transition">
+              <DownloadCloud className="w-8 h-8 text-blue-600" />
             </div>
-            <h2 className="text-xl font-display font-semibold text-white mb-2">Export Workspace</h2>
-            <p className="text-sm text-slate-400 mb-8 flex-1">
+            <h2 className="text-xl font-display font-bold text-slate-900 mb-2">Export Workspace</h2>
+            <p className="text-sm font-medium text-slate-500 mb-8 flex-1">
               Download a complete JSON snapshot of your current applications, vendors, licenses, and projects. Keep this file safe as a backup.
             </p>
             <button
               onClick={handleExport}
               disabled={isExporting}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-xl transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-md transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isExporting ? "Generating Backup..." : "Download Backup File"}
             </button>
           </div>
 
           {/* IMPORT CARD */}
-          <div className="bg-[#111520]/80 border border-slate-800 rounded-2xl p-8 flex flex-col items-center text-center shadow-lg hover:border-violet-500/30 transition relative overflow-hidden">
-            <div className="w-16 h-16 rounded-2xl bg-violet-500/10 flex items-center justify-center mb-6">
-              <UploadCloud className="w-8 h-8 text-violet-400" />
+          <div className="bg-white border border-slate-200 rounded-2xl p-8 flex flex-col items-center text-center shadow-sm hover:shadow-md hover:border-violet-300 transition group relative overflow-hidden">
+            <div className="w-16 h-16 rounded-2xl bg-violet-50 border border-violet-100 flex items-center justify-center mb-6 group-hover:bg-violet-100 transition">
+              <UploadCloud className="w-8 h-8 text-violet-600" />
             </div>
-            <h2 className="text-xl font-display font-semibold text-white mb-2">Restore Workspace</h2>
-            <p className="text-sm text-slate-400 mb-8 flex-1">
+            <h2 className="text-xl font-display font-bold text-slate-900 mb-2">Restore Workspace</h2>
+            <p className="text-sm font-medium text-slate-500 mb-6 flex-1">
               Upload a previously exported JSON backup file to instantly restore your workspace configuration and data.
             </p>
             
-            <div className="w-full bg-rose-500/5 border border-rose-500/20 rounded-lg p-3 mb-6 flex items-start gap-2 text-left">
-              <ShieldAlert className="w-4 h-4 text-rose-400 mt-0.5 flex-shrink-0" />
-              <p className="text-xs text-slate-300">
-                <strong className="text-rose-400">Warning:</strong> Importing will overwrite your existing data. Ensure your backup is up to date.
+            <div className="w-full bg-rose-50 border border-rose-200 rounded-lg p-3 mb-6 flex items-start gap-2 text-left shadow-sm">
+              <ShieldAlert className="w-4 h-4 text-rose-600 mt-0.5 flex-shrink-0" />
+              <p className="text-[11px] font-medium text-slate-700 leading-relaxed">
+                <strong className="text-rose-600">Warning:</strong> Importing will overwrite your existing data. Ensure your backup is up to date.
               </p>
             </div>
 
@@ -161,7 +158,7 @@ export default function DataManagementPage() {
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={isImporting}
-              className="w-full bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-medium py-3 rounded-xl transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl shadow-md transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isImporting ? "Restoring Data..." : "Select Backup File to Upload"}
             </button>

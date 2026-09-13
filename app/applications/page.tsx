@@ -59,7 +59,7 @@ const Field = ({ label, name, type = "text", form, setForm, disabled, min, place
     <input
       type={type} min={min} value={form[name] || ""} placeholder={placeholder}
       onChange={(e) => setForm({ ...form, [name]: e.target.value })} disabled={disabled}
-      className={`w-full bg-white border border-amber-200/60 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 shadow-sm transition ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      className={`w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 shadow-sm transition ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     />
   </div>
 );
@@ -186,7 +186,6 @@ export default function ApplicationsPage() {
 
       const data = await res.json();
       
-      // Catch MongoDB Duplicate Key Error (11000) for Invoice ID
       if (!res.ok) {
         if (data.message?.includes("11000") || data.message?.includes("duplicate")) {
           throw new Error("This Invoice / Document ID has already been uploaded to another application. Duplicates are not allowed.");
@@ -208,18 +207,18 @@ export default function ApplicationsPage() {
       title="Applications"
       subtitle="All SaaS products in your stack"
       action={
-        <button onClick={() => open()} className="bg-slate-900 hover:bg-black text-white text-sm px-5 py-2.5 rounded-xl font-medium flex items-center gap-2 shadow-sm transition">
+        <button onClick={() => open()} className="bg-slate-900 hover:bg-slate-800 text-white text-sm px-5 py-2.5 rounded-xl font-medium flex items-center gap-2 shadow-sm transition">
           <Plus className="w-4 h-4" /> Add Application
         </button>
       }
     >
       <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
-        <div className="flex items-center gap-1 bg-[#FFFCF5] border border-amber-200/60 rounded-xl p-1 shadow-sm">
+        <div className="flex items-center gap-1 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
           {FILTER_TABS.map((t) => (
             <button
               key={t.key} onClick={() => setFilter(t.key)}
               className={`px-4 py-1.5 text-xs rounded-lg transition-all ${
-                filter === t.key ? "bg-violet-100/80 text-violet-700 font-bold border border-violet-200/50 shadow-sm" : "text-slate-500 font-medium hover:bg-amber-50 hover:text-slate-900 border border-transparent"
+                filter === t.key ? "bg-blue-50 text-blue-700 font-bold border border-blue-100 shadow-sm" : "text-slate-500 font-medium hover:bg-slate-50 hover:text-slate-900 border border-transparent"
               }`}
             >
               {t.label}
@@ -227,7 +226,7 @@ export default function ApplicationsPage() {
           ))}
         </div>
 
-        <div className="flex items-center gap-2 bg-[#FFFCF5] border border-amber-200/60 rounded-xl px-4 py-2 w-80 shadow-sm focus-within:border-violet-400 focus-within:ring-1 focus-within:ring-violet-400 transition-all">
+        <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-4 py-2 w-80 shadow-sm focus-within:border-blue-400 focus-within:ring-1 focus-within:ring-blue-400 transition-all">
           <Search className="w-4 h-4 text-slate-400" />
           <input
             value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search apps or vendors..."
@@ -249,17 +248,17 @@ export default function ApplicationsPage() {
           const totalMonthlyCost = a.seats_total * a.monthly_cost; 
 
           return (
-            <div key={a.id} className="relative rounded-2xl border border-amber-200/60 bg-[#FFFCF5] shadow-sm hover:border-amber-300 transition-all group overflow-hidden p-6">
+            <div key={a.id} className="relative rounded-2xl border border-slate-200 bg-white shadow-sm hover:border-blue-300 hover:shadow-md transition-all group overflow-hidden p-6">
               <span className={`absolute top-6 right-6 w-2.5 h-2.5 rounded-full shadow-sm ${healthColor}`} />
               
               {a.status === "inactive" && (
-                <div className="absolute top-5 right-12 bg-slate-200 text-slate-600 text-[9px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
+                <div className="absolute top-5 right-12 bg-slate-100 text-slate-500 text-[9px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
                   Inactive
                 </div>
               )}
 
               <div className="mb-6 pr-6">
-                <div className="font-bold text-slate-900 text-xl truncate">{a.name}</div>
+                <div className="font-bold text-slate-900 text-xl truncate group-hover:text-blue-600 transition">{a.name}</div>
                 <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider mt-1">{a.vendor} · {a.category}</div>
               </div>
 
@@ -268,7 +267,7 @@ export default function ApplicationsPage() {
                   <span>Seats used</span>
                   <span className="text-slate-900 tabular-nums">{a.seats_used} / {a.seats_total}</span>
                 </div>
-                <div className="h-2 bg-amber-100/50 rounded-full overflow-hidden border border-amber-200/30">
+                <div className="h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200/50">
                   <div className={`h-full ${healthColor}`} style={{ width: `${Math.min(usagePct, 100)}%` }} />
                 </div>
               </div>
@@ -295,8 +294,8 @@ export default function ApplicationsPage() {
                 </div>
               </div>
 
-              <div className="mt-6 flex items-center gap-2 pt-5 border-t border-amber-200/60">
-                <button onClick={() => open(a)} className="flex-1 text-xs font-bold py-2.5 rounded-xl bg-white border border-amber-200/60 hover:bg-amber-50 text-slate-700 flex items-center justify-center gap-1.5 transition shadow-sm">
+              <div className="mt-6 flex items-center gap-2 pt-5 border-t border-slate-100">
+                <button onClick={() => open(a)} className="flex-1 text-xs font-bold py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 flex items-center justify-center gap-1.5 transition shadow-sm hover:text-blue-600">
                   <Pencil className="w-3.5 h-3.5" /> Edit
                 </button>
                 <button onClick={() => remove(a.id)} className="p-2.5 rounded-xl border border-transparent text-slate-400 hover:border-rose-200 hover:text-rose-600 hover:bg-rose-50 transition">
@@ -432,28 +431,28 @@ function AppModal({ form, setForm, users, vendors, setVendors, onClose, onSave, 
 
   return (
     <>
-      <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={!isSubmitting ? onClose : undefined}>
-        <div onClick={(e) => e.stopPropagation()} className="w-full max-w-2xl bg-[#FFFCF5] border border-amber-200/60 rounded-3xl shadow-2xl relative max-h-[90vh] flex flex-col">
+      <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={!isSubmitting ? onClose : undefined}>
+        <div onClick={(e) => e.stopPropagation()} className="w-full max-w-2xl bg-white border border-slate-200 rounded-3xl shadow-2xl relative max-h-[90vh] flex flex-col">
           
           {isSubmitting && (
-            <div className="absolute inset-0 bg-white/60 rounded-3xl flex items-center justify-center z-10 backdrop-blur-sm">
-              <div className="text-violet-600 font-bold animate-pulse flex items-center gap-2">Saving Application...</div>
+            <div className="absolute inset-0 bg-white/70 rounded-3xl flex items-center justify-center z-10 backdrop-blur-sm">
+              <div className="text-blue-600 font-bold animate-pulse flex items-center gap-2">Saving Application...</div>
             </div>
           )}
 
-          <div className="flex items-center justify-between p-6 border-b border-amber-200/60 bg-white/50 rounded-t-3xl">
+          <div className="flex items-center justify-between p-6 border-b border-slate-100 bg-slate-50/50 rounded-t-3xl">
             <h2 className="font-bold text-xl text-slate-900">{isNew ? "Add Application" : "Edit Application"}</h2>
-            <button onClick={onClose} disabled={isSubmitting} className="p-2 rounded-xl hover:bg-amber-100/50 text-slate-400 hover:text-slate-600 transition">
+            <button onClick={onClose} disabled={isSubmitting} className="p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition">
               <X className="w-5 h-5" />
             </button>
           </div>
 
           <div className="p-6 overflow-y-auto space-y-6 custom-scrollbar">
             
-            <div className="bg-white border-2 border-dashed border-amber-200 rounded-2xl p-6 text-center hover:bg-amber-50/50 transition relative">
+            <div className="bg-slate-50 border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center hover:bg-slate-100 transition relative">
               <input type="file" accept="application/pdf" onChange={handleFileUpload} disabled={parsing || isSubmitting} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
               <div className="flex flex-col items-center justify-center pointer-events-none">
-                <UploadCloud className={`w-8 h-8 mb-2 ${parsing ? 'text-violet-500 animate-bounce' : 'text-slate-400'}`} />
+                <UploadCloud className={`w-8 h-8 mb-2 ${parsing ? 'text-blue-500 animate-bounce' : 'text-slate-400'}`} />
                 <p className="text-sm font-bold text-slate-900">{parsing ? "Scanning Contract..." : "Upload existing PO/invoice"}</p>
                 <p className="text-xs font-medium text-slate-500 mt-1">Auto-extract app name, cost, renewal date & vendor details</p>
               </div>
@@ -472,7 +471,7 @@ function AppModal({ form, setForm, users, vendors, setVendors, onClose, onSave, 
                       setShowVendorModal(true);
                     }}
                     disabled={isSubmitting}
-                    className="text-[11px] font-bold text-violet-600 hover:text-violet-700 transition"
+                    className="text-[11px] font-bold text-blue-600 hover:text-blue-700 transition"
                   >
                     + Add New
                   </button>
@@ -490,11 +489,11 @@ function AppModal({ form, setForm, users, vendors, setVendors, onClose, onSave, 
                     }
                   }}
                   disabled={isSubmitting}
-                  className="w-full bg-white border border-amber-200/60 shadow-sm rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition"
+                  className="w-full bg-white border border-slate-200 shadow-sm rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
                 >
                   <option value="" disabled>Select a vendor...</option>
                   {vendors.map((v: any) => <option key={v._id} value={v._id}>{v.name}</option>)}
-                  <option value="NEW" className="font-bold text-violet-600">+ Add New Vendor (Pop-up)</option>
+                  <option value="NEW" className="font-bold text-blue-600">+ Add New Vendor (Pop-up)</option>
                 </select>
               </div>
             </div>
@@ -502,31 +501,31 @@ function AppModal({ form, setForm, users, vendors, setVendors, onClose, onSave, 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               <div>
                 <label className="text-[10px] uppercase font-bold tracking-wider text-slate-500 mb-1.5 block">Category</label>
-                <select value={form.category} onChange={e => setForm({...form, category: e.target.value})} disabled={isSubmitting} className="w-full bg-white border border-amber-200/60 shadow-sm rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500">
+                <select value={form.category} onChange={e => setForm({...form, category: e.target.value})} disabled={isSubmitting} className="w-full bg-white border border-slate-200 shadow-sm rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
                   {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
               <div>
                 <label className="text-[10px] uppercase font-bold tracking-wider text-slate-500 mb-1.5 block">Department</label>
-                <select value={form.department} onChange={e => setForm({...form, department: e.target.value})} disabled={isSubmitting} className="w-full bg-white border border-amber-200/60 shadow-sm rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500">
+                <select value={form.department} onChange={e => setForm({...form, department: e.target.value})} disabled={isSubmitting} className="w-full bg-white border border-slate-200 shadow-sm rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
                   {DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
                 </select>
               </div>
               <div>
                 <label className="text-[10px] uppercase font-bold tracking-wider text-slate-500 mb-1.5 block">App Status</label>
-                <select value={form.status} onChange={e => setForm({...form, status: e.target.value as any})} disabled={isSubmitting} className="w-full bg-white border border-amber-200/60 shadow-sm rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500">
+                <select value={form.status} onChange={e => setForm({...form, status: e.target.value as any})} disabled={isSubmitting} className="w-full bg-white border border-slate-200 shadow-sm rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
                 </select>
               </div>
             </div>
 
-            <div className="bg-amber-50/50 border border-amber-200/60 rounded-2xl p-5 shadow-sm">
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 shadow-sm">
               <h3 className="text-sm font-bold text-slate-900 mb-4">Billing & Term</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                 <div>
                   <label className="text-[10px] uppercase font-bold tracking-wider text-slate-500 mb-1.5 block">Billing Cycle</label>
-                  <select value={form.billingCycle} onChange={e => setForm({...form, billingCycle: e.target.value})} disabled={isSubmitting} className="w-full bg-white border border-amber-200/60 shadow-sm rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500">
+                  <select value={form.billingCycle} onChange={e => setForm({...form, billingCycle: e.target.value})} disabled={isSubmitting} className="w-full bg-white border border-slate-200 shadow-sm rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
                     <option value="monthly">Monthly</option>
                     <option value="yearly">Yearly</option>
                   </select>
@@ -535,7 +534,7 @@ function AppModal({ form, setForm, users, vendors, setVendors, onClose, onSave, 
                   <label className="text-[10px] uppercase font-bold tracking-wider text-slate-500 mb-1.5 block">
                     {form.billingCycle === 'yearly' ? 'Total Yearly Cost ($)' : 'Cost Per Month ($)'}
                   </label>
-                  <input type="number" min="0" value={form.cycle_cost || ""} onChange={e => setForm({...form, cycle_cost: Number(e.target.value)})} disabled={isSubmitting} className="w-full bg-white border border-amber-200/60 shadow-sm rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500" />
+                  <input type="number" min="0" value={form.cycle_cost || ""} onChange={e => setForm({...form, cycle_cost: Number(e.target.value)})} disabled={isSubmitting} className="w-full bg-white border border-slate-200 shadow-sm rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" />
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -551,11 +550,11 @@ function AppModal({ form, setForm, users, vendors, setVendors, onClose, onSave, 
                 </label>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-slate-500 font-bold uppercase">Total Seats:</span>
-                  <input type="number" min="1" value={form.seats_total} onChange={e => setForm({...form, seats_total: Number(e.target.value)})} className="bg-white border border-amber-200/60 shadow-sm rounded-lg px-2 py-1 text-sm font-bold text-slate-900 outline-none w-16 text-center focus:border-violet-500" />
+                  <input type="number" min="1" value={form.seats_total} onChange={e => setForm({...form, seats_total: Number(e.target.value)})} className="bg-white border border-slate-200 shadow-sm rounded-lg px-2 py-1 text-sm font-bold text-slate-900 outline-none w-16 text-center focus:border-blue-500" />
                 </div>
               </div>
               
-              <div className="border border-amber-200/60 shadow-sm rounded-xl overflow-hidden bg-white max-h-48 overflow-y-auto custom-scrollbar">
+              <div className="border border-slate-200 shadow-sm rounded-xl overflow-hidden bg-white max-h-48 overflow-y-auto custom-scrollbar">
                 {users.length === 0 ? (
                   <div className="p-5 text-center text-sm font-medium text-slate-500">No workspace users available.</div>
                 ) : (
@@ -565,10 +564,10 @@ function AppModal({ form, setForm, users, vendors, setVendors, onClose, onSave, 
                     const isFull = !isAssigned && form.assignedTo.length >= form.seats_total;
                     
                     return (
-                      <label key={uid} className={`flex items-center gap-4 p-3.5 border-b border-amber-100/50 hover:bg-amber-50 cursor-pointer ${isFull ? 'opacity-50 cursor-not-allowed' : ''} transition-colors`}>
+                      <label key={uid} className={`flex items-center gap-4 p-3.5 border-b border-slate-100 hover:bg-slate-50 cursor-pointer ${isFull ? 'opacity-50 cursor-not-allowed' : ''} transition-colors`}>
                         <input 
                           type="checkbox" checked={isAssigned} disabled={isFull || isSubmitting} onChange={() => handleUserToggle(uid)}
-                          className="w-4 h-4 rounded border-amber-300 text-violet-600 focus:ring-violet-600 bg-white"
+                          className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600 bg-white"
                         />
                         <div>
                           <div className="text-sm text-slate-900 font-bold">{user.name || user.phone}</div>
@@ -582,19 +581,18 @@ function AppModal({ form, setForm, users, vendors, setVendors, onClose, onSave, 
             </div>
           </div>
 
-          <div className="p-6 border-t border-amber-200/60 flex justify-end gap-3 bg-amber-50/30 rounded-b-3xl">
-            <button onClick={onClose} disabled={isSubmitting} className="px-5 py-2.5 rounded-xl bg-white border border-amber-200/60 hover:bg-amber-50 text-slate-700 text-sm font-bold shadow-sm transition">Cancel</button>
-            <button onClick={onSave} disabled={isSubmitting} className="px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-black shadow-md text-white text-sm font-bold transition">
+          <div className="p-6 border-t border-slate-100 flex justify-end gap-3 bg-slate-50/50 rounded-b-3xl">
+            <button onClick={onClose} disabled={isSubmitting} className="px-5 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 text-sm font-bold shadow-sm transition">Cancel</button>
+            <button onClick={onSave} disabled={isSubmitting} className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 shadow-md text-white text-sm font-bold transition">
               {isSubmitting ? 'Saving...' : 'Save Application'}
             </button>
           </div>
         </div>
       </div>
 
-      {/* NEW: VENDOR RESOLUTION MODAL (Appears if AI finds an unknown vendor) */}
       {vendorResolution && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[70] flex items-center justify-center p-4">
-           <div className="bg-[#FFFCF5] p-7 rounded-3xl shadow-2xl max-w-md w-full border border-amber-200/60 animate-in fade-in zoom-in-95">
+           <div className="bg-white p-7 rounded-3xl shadow-2xl max-w-md w-full border border-slate-200 animate-in fade-in zoom-in-95">
               <div className="flex items-center gap-3 mb-3">
                 <div className="p-2 bg-amber-100 text-amber-600 rounded-xl"><AlertCircle className="w-5 h-5" /></div>
                 <h3 className="font-display font-bold text-xl text-slate-900">Unrecognized Vendor</h3>
@@ -615,14 +613,14 @@ function AppModal({ form, setForm, users, vendors, setVendors, onClose, onSave, 
                     });
                     setShowVendorModal(true);
                     setVendorResolution(null);
-                 }} className="w-full py-3 bg-violet-600 hover:bg-violet-700 text-white rounded-xl font-bold text-sm shadow-md transition">
+                 }} className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-sm shadow-md transition">
                     Create as New Vendor
                  </button>
 
                  <div className="relative flex items-center py-1">
-                   <div className="flex-grow border-t border-amber-200/60"></div>
+                   <div className="flex-grow border-t border-slate-200"></div>
                    <span className="flex-shrink-0 mx-4 text-slate-400 text-[10px] font-bold uppercase tracking-wider">OR MAP TO EXISTING</span>
-                   <div className="flex-grow border-t border-amber-200/60"></div>
+                   <div className="flex-grow border-t border-slate-200"></div>
                  </div>
 
                  <div>
@@ -630,7 +628,7 @@ function AppModal({ form, setForm, users, vendors, setVendors, onClose, onSave, 
                        const selected = vendors.find(v => v._id === e.target.value);
                        setForm({ ...form, vendorId: selected._id, vendor: selected.name });
                        setVendorResolution(null);
-                    }} className="w-full bg-white border border-amber-200/60 shadow-sm rounded-xl px-4 py-3 text-sm font-medium text-slate-900 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition" defaultValue="">
+                    }} className="w-full bg-white border border-slate-200 shadow-sm rounded-xl px-4 py-3 text-sm font-medium text-slate-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition" defaultValue="">
                        <option value="" disabled>Select an existing vendor...</option>
                        {vendors.map(v => <option key={v._id} value={v._id}>{v.name}</option>)}
                     </select>
@@ -640,10 +638,9 @@ function AppModal({ form, setForm, users, vendors, setVendors, onClose, onSave, 
         </div>
       )}
 
-      {/* POP-UP MODAL: Add New Vendor */}
       {showVendorModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[80] flex items-center justify-center p-4" onClick={() => !isSavingVendor && setShowVendorModal(false)}>
-          <div onClick={(e) => e.stopPropagation()} className="w-full max-w-md bg-[#FFFCF5] border border-amber-200/60 shadow-2xl rounded-3xl p-6 relative animate-in fade-in zoom-in-95">
+          <div onClick={(e) => e.stopPropagation()} className="w-full max-w-md bg-white border border-slate-200 shadow-2xl rounded-3xl p-6 relative animate-in fade-in zoom-in-95">
             <div className="flex items-center justify-between mb-5">
               <h3 className="font-display font-bold text-lg text-slate-900">Add New Vendor</h3>
               <button onClick={() => setShowVendorModal(false)} disabled={isSavingVendor} className="text-slate-400 hover:text-slate-700 transition">
@@ -659,7 +656,7 @@ function AppModal({ form, setForm, users, vendors, setVendors, onClose, onSave, 
                   value={vendorForm.name}
                   onChange={(e) => setVendorForm({ ...vendorForm, name: e.target.value })}
                   placeholder="e.g. Amazon Web Services"
-                  className="w-full bg-white border border-amber-200/60 rounded-xl px-3.5 py-2 text-sm text-slate-900 font-medium outline-none focus:border-violet-500 transition"
+                  className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-sm text-slate-900 font-medium outline-none focus:border-blue-500 transition"
                   autoFocus
                 />
               </div>
@@ -673,7 +670,7 @@ function AppModal({ form, setForm, users, vendors, setVendors, onClose, onSave, 
                     value={vendorForm.website}
                     onChange={(e) => setVendorForm({ ...vendorForm, website: e.target.value })}
                     placeholder="https://"
-                    className="w-full bg-white border border-amber-200/60 rounded-xl pl-9 pr-3.5 py-2 text-sm text-slate-900 font-medium outline-none focus:border-violet-500 transition"
+                    className="w-full bg-white border border-slate-200 rounded-xl pl-9 pr-3.5 py-2 text-sm text-slate-900 font-medium outline-none focus:border-blue-500 transition"
                   />
                 </div>
               </div>
@@ -687,7 +684,7 @@ function AppModal({ form, setForm, users, vendors, setVendors, onClose, onSave, 
                       value={vendorForm.contactName}
                       onChange={(e) => setVendorForm({ ...vendorForm, contactName: e.target.value })}
                       placeholder="Jane Doe"
-                      className="w-full bg-white border border-amber-200/60 rounded-xl pl-8 pr-3 py-2 text-sm text-slate-900 font-medium outline-none focus:border-violet-500 transition"
+                      className="w-full bg-white border border-slate-200 rounded-xl pl-8 pr-3 py-2 text-sm text-slate-900 font-medium outline-none focus:border-blue-500 transition"
                     />
                   </div>
                 </div>
@@ -700,7 +697,7 @@ function AppModal({ form, setForm, users, vendors, setVendors, onClose, onSave, 
                       value={vendorForm.contactEmail}
                       onChange={(e) => setVendorForm({ ...vendorForm, contactEmail: e.target.value })}
                       placeholder="jane@vendor.com"
-                      className="w-full bg-white border border-amber-200/60 rounded-xl pl-8 pr-3 py-2 text-sm text-slate-900 font-medium outline-none focus:border-violet-500 transition"
+                      className="w-full bg-white border border-slate-200 rounded-xl pl-8 pr-3 py-2 text-sm text-slate-900 font-medium outline-none focus:border-blue-500 transition"
                     />
                   </div>
                 </div>
@@ -715,24 +712,24 @@ function AppModal({ form, setForm, users, vendors, setVendors, onClose, onSave, 
                     value={vendorForm.contactPhone}
                     onChange={(e) => setVendorForm({ ...vendorForm, contactPhone: e.target.value })}
                     placeholder="+1 (555) 000-0000"
-                    className="w-full bg-white border border-amber-200/60 rounded-xl pl-8 pr-3 py-2 text-sm text-slate-900 font-medium outline-none focus:border-violet-500 transition"
+                    className="w-full bg-white border border-slate-200 rounded-xl pl-8 pr-3 py-2 text-sm text-slate-900 font-medium outline-none focus:border-blue-500 transition"
                   />
                 </div>
               </div>
 
-              <div className="mt-6 flex gap-3 pt-3 border-t border-amber-200/60">
+              <div className="mt-6 flex gap-3 pt-3 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setShowVendorModal(false)}
                   disabled={isSavingVendor}
-                  className="flex-1 py-2.5 rounded-xl bg-white border border-amber-200/60 hover:bg-amber-50 text-slate-700 font-bold text-sm transition"
+                  className="flex-1 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-sm transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSavingVendor}
-                  className="flex-1 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-sm shadow-md transition disabled:opacity-50"
+                  className="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md transition disabled:opacity-50"
                 >
                   {isSavingVendor ? 'Saving Vendor...' : 'Save Vendor'}
                 </button>

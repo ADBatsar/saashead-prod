@@ -103,10 +103,10 @@ export default function CostOptimizationPage() {
   }, []);
 
   const ORB = { 
-    rose: "bg-rose-500/20", 
-    amber: "bg-amber-500/20", 
-    violet: "bg-violet-500/20", 
-    emerald: "bg-emerald-500/20" 
+    rose: "bg-rose-500/10", 
+    amber: "bg-amber-500/10", 
+    violet: "bg-violet-500/10", 
+    emerald: "bg-emerald-500/10" 
   };
 
   const cards = [
@@ -122,18 +122,18 @@ export default function CostOptimizationPage() {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
         {cards.map((c) => (
-          <div key={c.l} className="relative overflow-hidden rounded-2xl border border-amber-200/60 shadow-sm bg-[#FFFCF5]/90 p-6 shadow-2xl">
+          <div key={c.l} className="relative overflow-hidden rounded-2xl border border-slate-200 shadow-sm bg-white p-6 hover:shadow-md transition">
             <div className={`absolute -top-10 -right-10 w-48 h-48 ${ORB[c.accent as keyof typeof ORB]} blur-3xl rounded-full`} />
             <div className="relative flex items-start justify-between">
               <div>
-                <div className="text-[10px] uppercase tracking-[0.18em] text-slate-500">{c.l}</div>
-                <div className="mt-3 font-display text-3xl text-slate-900 font-light tabular-nums">
+                <div className="text-[10px] uppercase font-bold tracking-wider text-slate-500">{c.l}</div>
+                <div className="mt-3 font-display text-3xl text-slate-900 font-bold tabular-nums">
                   {loading ? "..." : currency(c.v)}
                   <span className="text-sm text-slate-500 ml-1">{c.sub}</span>
                 </div>
               </div>
-              <div className="w-11 h-11 rounded-xl bg-white/5 flex items-center justify-center">
-                <c.icon className={`w-5 h-5 text-${c.accent}-400`} />
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center bg-${c.accent}-50 border border-${c.accent}-100`}>
+                <c.icon className={`w-5 h-5 text-${c.accent}-500`} />
               </div>
             </div>
           </div>
@@ -144,40 +144,40 @@ export default function CostOptimizationPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-6">
         
         {/* Unused Licenses Recovery */}
-        <div className="rounded-2xl border border-amber-200/60 shadow-sm bg-[#FFFCF5]/80 overflow-hidden shadow-xl flex flex-col">
-          <div className="p-5 border-b border-amber-200/60 shadow-sm flex items-center justify-between">
+        <div className="rounded-2xl border border-slate-200 shadow-sm bg-white overflow-hidden flex flex-col">
+          <div className="p-5 border-b border-slate-100 flex items-center justify-between">
             <div>
-              <h3 className="font-display text-slate-900 font-medium">Unused License Recovery</h3>
-              <p className="text-xs text-slate-500 mt-0.5">Seats paid for but not assigned to users.</p>
+              <h3 className="font-bold text-slate-900">Unused License Recovery</h3>
+              <p className="text-xs font-medium text-slate-500 mt-0.5">Seats paid for but not assigned to users.</p>
             </div>
-            <span className="bg-rose-500/10 text-rose-400 text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">High Priority</span>
+            <span className="bg-rose-50 text-rose-600 border border-rose-200 text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">High Priority</span>
           </div>
           
           <div className="overflow-x-auto flex-1">
             <table className="w-full text-sm text-left">
-              <thead className="bg-[#111728] border-b border-amber-200/60 shadow-sm">
-                <tr className="text-[10px] uppercase tracking-wider text-slate-500">
-                  <th className="px-5 py-3 font-medium">Application</th>
-                  <th className="px-5 py-3 font-medium text-center">Unused Seats</th>
-                  <th className="px-5 py-3 font-medium text-right">Monthly Waste</th>
+              <thead className="bg-slate-50 border-b border-slate-200">
+                <tr className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                  <th className="px-5 py-3">Application</th>
+                  <th className="px-5 py-3 text-center">Unused Seats</th>
+                  <th className="px-5 py-3 text-right">Monthly Waste</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
+              <tbody className="divide-y divide-slate-100">
                 {unusedApps.length > 0 ? unusedApps.map(app => (
-                  <tr key={app._id} className="hover:bg-amber-50 transition">
-                    <td className="px-5 py-3 flex items-center gap-3">
-                      <span className="text-slate-900 font-bold font-medium">{app.applicationName}</span>
+                  <tr key={app._id} className="hover:bg-slate-50 transition cursor-pointer">
+                    <td className="px-5 py-4 flex items-center gap-3">
+                      <span className="text-slate-900 font-bold">{app.applicationName}</span>
                     </td>
-                    <td className="px-5 py-3 text-center">
-                      <span className="bg-white/5 text-slate-600 font-medium px-2 py-0.5 rounded-md tabular-nums">{app.unusedSeats}</span>
+                    <td className="px-5 py-4 text-center">
+                      <span className="bg-slate-100 text-slate-700 font-bold px-2.5 py-1 rounded-md tabular-nums">{app.unusedSeats}</span>
                     </td>
-                    <td className="px-5 py-3 text-right text-rose-400 font-medium tabular-nums">
+                    <td className="px-5 py-4 text-right text-rose-600 font-bold tabular-nums">
                       {currency(app.waste)}
                     </td>
                   </tr>
                 )) : (
                   <tr>
-                    <td colSpan={3} className="px-5 py-12 text-center text-slate-500">
+                    <td colSpan={3} className="px-5 py-12 text-center text-slate-500 font-medium">
                       {loading ? "Analyzing licenses..." : "Great job! No unused licenses found."}
                     </td>
                   </tr>
@@ -188,41 +188,41 @@ export default function CostOptimizationPage() {
         </div>
 
         {/* Duplicate Tool Overlap */}
-        <div className="rounded-2xl border border-amber-200/60 shadow-sm bg-[#FFFCF5]/80 overflow-hidden shadow-xl flex flex-col">
-          <div className="p-5 border-b border-amber-200/60 shadow-sm flex items-center justify-between">
+        <div className="rounded-2xl border border-slate-200 shadow-sm bg-white overflow-hidden flex flex-col">
+          <div className="p-5 border-b border-slate-100 flex items-center justify-between">
             <div>
-              <h3 className="font-display text-slate-900 font-medium">Category Overlap Analysis</h3>
-              <p className="text-xs text-slate-500 mt-0.5">Multiple tools serving the same function.</p>
+              <h3 className="font-bold text-slate-900">Category Overlap Analysis</h3>
+              <p className="text-xs font-medium text-slate-500 mt-0.5">Multiple tools serving the same function.</p>
             </div>
-            <span className="bg-amber-500/10 text-amber-400 text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">Review Required</span>
+            <span className="bg-amber-50 text-amber-600 border border-amber-200 text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">Review Required</span>
           </div>
 
-          <div className="overflow-x-auto flex-1 p-5 space-y-4">
+          <div className="overflow-x-auto flex-1 p-5 space-y-4 custom-scrollbar">
             {duplicateCategories.length > 0 ? duplicateCategories.map(cat => (
-              <div key={cat.category} className="border border-amber-200/60 shadow-sm bg-[#111728]/50 rounded-xl p-4">
+              <div key={cat.category} className="border border-slate-200 shadow-sm bg-slate-50 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">{cat.category}</span>
-                  <span className="text-sm font-medium text-amber-400">Save {currency(cat.potentialSavings)}/mo</span>
+                  <span className="text-sm font-bold text-emerald-600">Save {currency(cat.potentialSavings)}/mo</span>
                 </div>
                 
                 <div className="flex items-center justify-between gap-4">
                   {/* Primary Tool */}
-                  <div className="flex-1 bg-[#FFFCF5] border border-emerald-500/20 rounded-lg p-3">
-                    <div className="text-[10px] text-emerald-400 uppercase tracking-wider mb-2 font-semibold">Primary Tool</div>
+                  <div className="flex-1 bg-white border border-emerald-200 shadow-sm rounded-lg p-3">
+                    <div className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider mb-2">Primary Tool</div>
                     <div className="flex items-center gap-2">
                       <span className="text-sm text-slate-900 font-bold">{cat.primary.applicationName}</span>
                     </div>
                   </div>
                   
-                  <ArrowRight className="w-5 h-5 text-slate-600 flex-shrink-0" />
+                  <ArrowRight className="w-5 h-5 text-slate-400 flex-shrink-0" />
                   
                   {/* Redundant Tools */}
-                  <div className="flex-1 bg-[#FFFCF5] border border-rose-500/20 rounded-lg p-3 space-y-2">
-                    <div className="text-[10px] text-rose-400 uppercase tracking-wider font-semibold">Consolidate These</div>
+                  <div className="flex-1 bg-white border border-rose-200 shadow-sm rounded-lg p-3 space-y-2">
+                    <div className="text-[10px] text-rose-600 font-bold uppercase tracking-wider">Consolidate These</div>
                     {cat.redundancies.map((r: any) => (
                       <div key={r._id} className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs text-slate-600 font-medium">{r.applicationName}</span>
+                          <span className="text-xs text-slate-700 font-bold">{r.applicationName}</span>
                         </div>
                       </div>
                     ))}
@@ -230,7 +230,7 @@ export default function CostOptimizationPage() {
                 </div>
               </div>
             )) : (
-              <div className="py-12 text-center text-slate-500">
+              <div className="py-12 text-center text-slate-500 font-medium">
                 {loading ? "Analyzing overlap..." : "No overlapping categories detected."}
               </div>
             )}

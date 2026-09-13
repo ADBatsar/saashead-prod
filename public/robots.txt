@@ -1,8 +1,19 @@
+# Explicitly declare AI Crawlers to pass SEO audits
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: Google-Extended
+User-agent: anthropic-ai
+User-agent: Claude-Web
+User-agent: CCBot
 User-agent: *
+
+# Public Pages
 Allow: /
 Allow: /login
 Allow: /register
 Allow: /forgot-password
+
+# Protected SaaS Routes & API
 Disallow: /api/
 Disallow: /admin/
 Disallow: /dashboard/

@@ -106,7 +106,7 @@ export default function LicensesPage() {
     { key: "health", label: "Health" },
   ];
 
-  // Calculated totals using the safeguarded array (Defined only once!)
+  // Calculated totals using the safeguarded array
   const totalCost = safeApps.reduce((s, a) => s + (a.monthly_cost || 0), 0);
   const totalSeats = safeApps.reduce((s, a) => s + (a.seats_total || 0), 0);
   const totalUsed = safeApps.reduce((s, a) => s + (a.seats_used || 0), 0);
@@ -114,13 +114,17 @@ export default function LicensesPage() {
   if (loading) {
     return (
       <Layout title="Licenses" subtitle="Seat management across applications">
-        <div className="text-slate-500 text-sm">Loading...</div>
+        <div className="flex items-center justify-center h-64 text-slate-400 text-sm font-medium animate-pulse">
+          Loading licenses...
+        </div>
       </Layout>
     );
   }
 
   return (
     <Layout title="Licenses" subtitle="Seat management across applications">
+      
+      {/* KPI Stats Row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <Stat label="Total Licenses" value={totalSeats} />
         <Stat label="Assigned" value={totalUsed} />
@@ -128,32 +132,34 @@ export default function LicensesPage() {
         <Stat label="Monthly Cost" value={currency(totalCost)} accent="blue" />
       </div>
 
+      {/* Search Bar */}
       <div className="flex items-center justify-end mb-4">
-        <div className="flex items-center gap-2 bg-[#FFFCF5] border border-amber-200/60 shadow-sm rounded-xl px-3 py-2 w-72">
-          <Search className="w-4 h-4 text-slate-500" />
+        <div className="flex items-center gap-2 bg-white border border-slate-200 shadow-sm rounded-xl px-4 py-2 w-72 focus-within:border-blue-400 focus-within:ring-1 focus-within:ring-blue-400 transition-all">
+          <Search className="w-4 h-4 text-slate-400" />
           <input 
             data-testid="license-search" 
             value={query} 
             onChange={(e) => setQuery(e.target.value)} 
-            placeholder="Search…"
-            className="bg-transparent outline-none text-sm text-slate-200 placeholder:text-slate-600 flex-1" 
+            placeholder="Search apps or vendors…"
+            className="bg-transparent outline-none text-sm font-medium text-slate-900 placeholder:text-slate-400 flex-1" 
           />
         </div>
       </div>
 
-      <div className="rounded-2xl border border-amber-200/60 shadow-sm bg-[#FFFCF5]/80 overflow-hidden">
+      {/* Data Table */}
+      <div className="rounded-2xl border border-slate-200 shadow-sm bg-white overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-[#111728]">
-            <tr className="text-[10px] uppercase font-bold tracking-wider text-slate-400 border-b border-slate-200">    
-	    {cols.map((c) => (
+            <thead className="bg-slate-50 border-b border-slate-200">
+              <tr className="text-[10px] uppercase font-bold tracking-wider text-slate-500">    
+                {cols.map((c) => (
                   <th key={c.key} className="text-left px-4 py-3 font-medium">
                     <button 
                       onClick={() => { 
                         if (sortKey === c.key) setSortDir(sortDir === "asc" ? "desc" : "asc"); 
                         else { setSortKey(c.key); setSortDir("desc"); } 
                       }}
-                      className="inline-flex items-center gap-1 hover:text-slate-600 font-medium" 
+                      className="inline-flex items-center gap-1 hover:text-slate-900 font-bold transition" 
                       data-testid={`sort-${c.key}`}
                     >
                       {c.label} <ArrowUpDown className="w-3 h-3 opacity-50" />
@@ -162,14 +168,14 @@ export default function LicensesPage() {
                 ))}
               </tr>
             </thead>
-          <tbody>
+            <tbody className="divide-y divide-slate-100">
               {rows.map((a, index) => {
                 const inactive = Math.max(0, (a.seats_total || 0) - (a.seats_used || 0));
                 // Safely handle missing IDs (supports MongoDB _id or falls back to index)
                 const rowKey = a.id || a._id || index; 
                 
                 return (
-                  <tr key={rowKey} data-testid={`license-row-${rowKey}`} className="border-t border-slate-800/40 hover:bg-amber-50] transition">
+                  <tr key={rowKey} data-testid={`license-row-${rowKey}`} className="hover:bg-slate-50 transition cursor-pointer">
                     <td className="px-4 py-3 flex items-center gap-3">
                       <span className="text-slate-900 font-bold">{a.name}</span>
                     </td>
@@ -178,7 +184,7 @@ export default function LicensesPage() {
                     <td className="px-4 py-3 text-slate-600">{a.department}</td>
                     <td className="px-4 py-3 text-slate-900 font-bold tabular-nums">{a.seats_total}</td>
                     <td className="px-4 py-3 text-slate-900 font-bold tabular-nums">{a.seats_used}</td>
-                    <td className="px-4 py-3 text-rose-300 tabular-nums">{inactive}</td>
+                    <td className="px-4 py-3 text-rose-600 font-bold tabular-nums">{inactive}</td>
                     <td className="px-4 py-3 text-slate-900 font-bold tabular-nums">{currency(a.monthly_cost)}</td>
                     <td className="px-4 py-3 text-slate-600 font-medium">{formatDate(a.renewal_date)}</td>
                     <td className="px-4 py-3">
@@ -198,7 +204,7 @@ export default function LicensesPage() {
                 </tr>
               )}
             </tbody>
-        </table>
+          </table>
         </div>
       </div>
     </Layout>
@@ -213,15 +219,15 @@ interface StatProps {
 
 function Stat({ label, value, accent = "slate" }: StatProps) {
   const colors = { 
-    slate: "text-slate-900 font-bold", 
-    rose: "text-rose-300", 
-    blue: "text-blue-300" 
+    slate: "text-slate-900 font-black", 
+    rose: "text-rose-600 font-black", 
+    blue: "text-blue-600 font-black" 
   };
   
   return (
-    <div className="rounded-2xl border border-amber-200/60 shadow-sm bg-[#FFFCF5]/80 p-5">
-      <div className="text-[10px] uppercase tracking-wider text-slate-500">{label}</div>
-      <div className={`font-display text-2xl mt-2 font-light tabular-nums ${colors[accent]}`}>
+    <div className="rounded-2xl border border-slate-200 shadow-sm bg-white p-5 hover:shadow-md transition">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">{label}</div>
+      <div className={`font-display text-2xl tabular-nums ${colors[accent]}`}>
         {value}
       </div>
     </div>
